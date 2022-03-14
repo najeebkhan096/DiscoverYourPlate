@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "411644895859",
+    "project_id": "discoveryourplate-7ac8e",
+    "storage_bucket": "discoveryourplate-7ac8e.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:411644895859:android:ed87a83745b5d464078006",
+        "android_client_info": {
+          "package_name": "com.example.discoveryourplate"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "411644895859-iigqgfcj33rvjee3mc4g2ddmef8230j2.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD2quhUissHq2jgtE5NtNB-yOKEFkUR-7s"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "411644895859-iigqgfcj33rvjee3mc4g2ddmef8230j2.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
