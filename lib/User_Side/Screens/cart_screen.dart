@@ -3,6 +3,11 @@ import 'dart:convert';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:discoveryourplate/Database/database.dart';
 import 'package:discoveryourplate/Restuarent_Side/modals/product.dart';
+import 'package:discoveryourplate/User_Side/Screens/Home_screen.dart';
+import 'package:discoveryourplate/constants.dart';
+import 'package:discoveryourplate/hybrid_screens/location.dart';
+import 'package:discoveryourplate/modals/constants.dart';
+import 'package:discoveryourplate/modals/foodcalories.dart';
 import 'package:http/http.dart' as http;
 import 'package:discoveryourplate/User_Side/modal/constants.dart';
 import 'package:discoveryourplate/User_Side/modal/order.dart';
@@ -29,6 +34,8 @@ class _Cart_ScreenState extends State<Cart_Screen> {
   TextEditingController notes_controller = TextEditingController();
   String notes = '';
   double totalamount = 0;
+  double requiredCalories=0;
+
 
   void _showErrorDialog(String msg) {
     showDialog(
@@ -99,11 +106,19 @@ class _Cart_ScreenState extends State<Cart_Screen> {
         ));
 
         paymentIntentData = null;
+
+
+        new_order.products!.forEach((element) {
+          database.updateProductSale(docid:element.product_doc_id.toString(),count:element.sales);
+          print("product sale is "+element.sales.toString());
+          print("rest id  is "+element.product_doc_id.toString());
+        });
         database.Add_Order(new_order)
             .then((value) {
           cart_list = [];
           Navigator.of(context).pop();
         });
+
       }).onError((error, stackTrace) {
         print('Exception/DISPLAYPAYMENTSHEET==> $error $stackTrace');
       });
@@ -157,11 +172,32 @@ class _Cart_ScreenState extends State<Cart_Screen> {
       });
     });
   }
+double totalCalories=0;
+
+  calculateCalories()async{
+    totalCalories=0;
+    cart_list.forEach((cartitem) async{
+      double data=double.parse(cartitem.calories.toString());
+      data=data*cartitem.quantity!;
+    setState(() {
+      totalCalories=totalCalories+data;
+
+  if(currentuser!.BMI!<18.5){
+    requiredCalories=2400-totalCalories;
+
+  }
+    });
+    });
+
+
+  }
+
 
   @override
   void initState() {
     // TODO: implement initState
     calculatetotal();
+    calculateCalories();
     super.initState();
   }
 
@@ -193,13 +229,18 @@ class _Cart_ScreenState extends State<Cart_Screen> {
                 child: Column(
                   children: [
                     Container(
+
                       height: MediaQuery.of(context).size.height * 0.35,
                       child: ListView.builder(
                           itemCount: cart_list.length,
                           itemBuilder: (context, index) {
                             return Container(
+
+                              margin: EdgeInsets.only(
+                                  left: MediaQuery.of(context).size.width*0.05,
+                                  top: MediaQuery.of(context).size.height*0.02),
                               height: MediaQuery.of(context).size.height * 0.13,
-                              width: MediaQuery.of(context).size.width * 0.94,
+
                               child: Row(
                                 children: [
                                   InkWell(
@@ -232,6 +273,7 @@ class _Cart_ScreenState extends State<Cart_Screen> {
                                         0.025,
                                   ),
                                   Container(
+
                                     height:
                                         MediaQuery.of(context).size.height * 1,
                                     width:
@@ -272,7 +314,7 @@ class _Cart_ScreenState extends State<Cart_Screen> {
                                                 0.015,
                                           ),
                                           Text(
-                                              '\$${cart_list[index].price.toString()}',
+                                              'PKR ${cart_list[index].price.toString()}',
                                               style: TextStyle(
                                                   fontWeight: FontWeight.bold,
                                                   fontFamily:
@@ -286,10 +328,12 @@ class _Cart_ScreenState extends State<Cart_Screen> {
                                         0.028,
                                   ),
                                   Container(
+
                                     height: MediaQuery.of(context).size.height *
                                         0.7,
                                     width: MediaQuery.of(context).size.width *
-                                        0.13,
+                                        0.2,
+
                                     child: Column(
                                       mainAxisAlignment:
                                           MainAxisAlignment.center,
@@ -327,8 +371,8 @@ class _Cart_ScreenState extends State<Cart_Screen> {
                                                   borderRadius:
                                                       BorderRadius.circular(3),
                                                 ),
-                                                height: 15.67,
-                                                width: 15.67,
+                                                height: 25,
+                                                width: 25,
                                                 child: InkWell(
                                                     onTap: () {
                                                       if (cart_list[index]
@@ -347,6 +391,7 @@ class _Cart_ScreenState extends State<Cart_Screen> {
                                                                 .price!
                                                                 .toDouble());
                                                         calculatetotal();
+calculateCalories();
                                                       }
                                                     },
                                                     child: Center(
@@ -367,8 +412,8 @@ class _Cart_ScreenState extends State<Cart_Screen> {
                                                   borderRadius:
                                                       BorderRadius.circular(3),
                                                 ),
-                                                height: 15.67,
-                                                width: 15.67,
+                                                height: 25,
+                                                width: 25,
                                                 child: InkWell(
                                                     onTap: () {
                                                       cart_list[index]
@@ -383,6 +428,7 @@ class _Cart_ScreenState extends State<Cart_Screen> {
                                                                   .price!
                                                                   .toDouble());
                                                       calculatetotal();
+                    calculateCalories();
                                                     },
                                                     child: Center(
                                                         child: Text(
@@ -424,7 +470,7 @@ class _Cart_ScreenState extends State<Cart_Screen> {
                               width: MediaQuery.of(context).size.width * 1,
                               child: TextFormField(
                                   maxLines: maxLines,
-                                  keyboardType: TextInputType.multiline,
+                                  keyboardType: TextInputType.name,
                                   decoration: InputDecoration(
                                     hintText: "Notes",
                                     hintStyle: TextStyle(fontSize: 10),
@@ -453,10 +499,56 @@ class _Cart_ScreenState extends State<Cart_Screen> {
                       ),
                     ),
                     Divider(),
-                    Container(
-                      height: device_size_height * 0.1,
-                      child: Padding(
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Column(
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              InkWell(
+                                onTap: () {},
+                                child: Text(
+                                  "Total",
+                                  style: TextStyle(color: mycolor),
+                                ),
+                              ),
+                              Text(totalamount.toStringAsFixed(2),
+                                  style: TextStyle(color: mycolor)),
+                            ],
+                          ),
+                          //   SizedBox(height: 35,),
+                        ],
+                      ),
+                    ),
+
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Column(
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              InkWell(
+                                onTap: () {},
+                                child: Text(
+                                  "Total Calories",
+                                  style: TextStyle(color: mycolor),
+                                ),
+                              ),
+                              Text(totalCalories.toStringAsFixed(2),
+                                  style: TextStyle(color: mycolor)),
+                            ],
+                          ),
+                          //   SizedBox(height: 35,),
+                        ],
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Container(
                         padding: const EdgeInsets.all(8.0),
+                        color: Colors.teal,
                         child: Column(
                           children: [
                             Row(
@@ -465,20 +557,68 @@ class _Cart_ScreenState extends State<Cart_Screen> {
                                 InkWell(
                                   onTap: () {},
                                   child: Text(
-                                    "Total",
-                                    style: TextStyle(color: mycolor),
+                                    "BMI",
+                                    style: TextStyle(color: Colors.white),
                                   ),
                                 ),
-                                Text(totalamount.toStringAsFixed(2),
-                                    style: TextStyle(color: mycolor)),
+                                Text(currentuser!.BMI!.toStringAsFixed(2),
+                                    style: TextStyle(color: Colors.white)),
                               ],
                             ),
                             //   SizedBox(height: 35,),
+
+                            currentuser!.BMI!<18.5?
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Column(
+
+                                children: [
+                                  Center(child: Text("You are underweight",style: TextStyle(
+                                    color: Colors.white
+                                  ),
+                                  )),
+                                  SizedBox(height: 10,),
+
+
+
+                                ],
+                              ),
+                            ):
+                            currentuser!.BMI!>24.5?
+                            Text("You are Overweight"):
+
+                            Text("Normal weight"),
+
+
                           ],
                         ),
                       ),
                     ),
-                    Divider(),
+
+
+                    requiredCalories<0?      Text("You exceeded the today Required Calories ",
+                        style: TextStyle(color: mycolor)
+                    ):
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          InkWell(
+                            onTap: () {},
+                            child: Text(
+                              "Today Required Calories",
+                              style: TextStyle(color: mycolor),
+                            ),
+                          ),
+                          Text(requiredCalories.toStringAsFixed(2),
+                              style: TextStyle(color: mycolor)),
+                        ],
+                      ),
+                    ),
+
+                    SizedBox(height: MediaQuery.of(context).size.height*0.025,),
+
                     isloading
                         ? SpinKitCircle(
                             color: Colors.black,
@@ -496,41 +636,52 @@ class _Cart_ScreenState extends State<Cart_Screen> {
                                           isloading = true;
                                         });
                                         try {
-                                          Position data = await _location
-                                              .determinePosition();
-                                          String loc = await _location
-                                              .GetAddressFromLatLong(data);
-                                          if (loc.isEmpty) {
+    if (current_location!.isEmpty) {
+    _showErrorDialog("Please Select Location");
+    } else {
+    MyGeolocation _location=MyGeolocation();
+    Position data = await _location
+        .determinePosition();
+    current_location = await _location
+        .GetAddressFromLatLong(data);
+
+
+                                          if (current_location!.isEmpty) {
                                             _showErrorDialog(
                                                 "Pick Your Current Location");
                                             setState(() {
                                               isloading = false;
                                             });
                                           } else {
-                                            setState(() {
-                                              isloading = true;
-                                            });
-                                            Order new_order = Order(
-                                              products: cart_list,
-                                              total_price: totalamount,
-                                              date: DateTime.now().toString(),
-                                              location: loc,
-                                              customer_latitude: data.latitude,
-                                              customer_longitude:
-                                                  data.longitude,
-                                              customer_name: username,
-                                              notes: notes_controller.text,
-                                              userid: user_id,
-                                              order_status: 'ongoing',
-                                            );
-                                      makePayment(new_order).then((value) {
-                                        setState(() {
-                                          isloading = false;
-                                        });
-                                      });
+    setState(() {
+    isloading = true;
+    });
+
+    Order new_order = Order(
+    products: cart_list,
+    total_price: totalamount,
+    date: DateTime.now().toString(),
+    location: current_location,
+    customer_latitude: data.latitude,
+    customer_longitude:
+    data.longitude,
+    customer_name: username,
+    notes: notes_controller.text,
+    userid: user_id,
+    order_status: 'ongoing',
+    restuarent_id: cart_list[0].product_doc_id
+
+    );
+    print("step2");
+
+    makePayment(new_order).then((value) {
+    setState(() {
+    isloading = false;
+    });
+    });
 
 
-                                          }
+    }}
 
                                         } catch (error) {
                                           setState(() {
@@ -546,7 +697,12 @@ class _Cart_ScreenState extends State<Cart_Screen> {
                                             letterSpacing: 1.1),
                                       ))),
                             ),
-                          )
+                          ),
+
+
+                    SizedBox(height: MediaQuery.of(context).size.height*0.025,),
+
+
                   ],
                 ),
               ),

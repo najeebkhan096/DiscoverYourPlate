@@ -2,9 +2,11 @@ import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:discoveryourplate/Database/database.dart';
+import 'package:discoveryourplate/Restuarent_Side/modals/product.dart';
 import 'package:discoveryourplate/Restuarent_Side/screens/Restuarent_Dashboard.dart';
 import 'package:discoveryourplate/User_Side/modal/user_modal.dart';
 import 'package:discoveryourplate/hybrid_screens/module/location.dart';
+import 'package:discoveryourplate/modals/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 import 'package:flutter_spinkit/flutter_spinkit.dart';
@@ -192,6 +194,7 @@ class _Enter_Restuarent_nameState extends State<Enter_Restuarent_name> {
           isloading=false;
         });
         await database.UpdateRestuarent_Setup_Status(widget.doc_id.toString()).then((value) {
+          Restuarent_name=restuarent_name;
           Navigator.of(context).pushReplacementNamed(Restuarent_Dashboard.routename);
         });
 
@@ -309,6 +312,17 @@ _show_my_Dialog();
                 child: image_file==null?Center(child: Text("No image selected")):FittedBox(
                     fit: BoxFit.fill, child: Image.file(image_file!)),
               ),
+              _loc.isEmpty?Text(""):
+              Container(
+                margin: EdgeInsets.only(left: 15, top: 20, right: 20),
+                height: 58,
+alignment: Alignment.center,
+                width: 336,
+                decoration: BoxDecoration(
+                    color: Color(0xffF9F9F9),
+                    borderRadius: BorderRadius.all(Radius.circular(4))),
+                child: Container(child: Text(_loc.toString())),
+              ),
 
               SizedBox(
                 height: MediaQuery.of(context).size.height * 0.04,
@@ -335,7 +349,9 @@ _show_my_Dialog();
                     _longitude=data.longitude;
                       _loc = await _location
                          .GetAddressFromLatLong(data);
-
+setState(() {
+  print("");
+});
                   },
                 ),
               ),

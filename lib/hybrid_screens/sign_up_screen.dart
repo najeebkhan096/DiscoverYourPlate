@@ -21,10 +21,11 @@ String selected_categ='User';
 
   String ? email;
   String ? password;
+  String confpass='';
   String ? username;
   String ? phone_no;
-bool showpass=false;
-bool showconf=false;
+bool showpass=true;
+bool showconf=true;
 
   AuthService _auth = AuthService();
   Future<void> _submit() async {
@@ -41,6 +42,7 @@ bool showconf=false;
       final  User result = await _auth.registerWithEmailAndPassword(email!, password!);
       print(result.uid);
 
+      result.updateDisplayName(username.toString());
       adduser(result.uid).then((value) async {
         Fluttertoast.showToast(
             msg: "Account is Created",
@@ -97,7 +99,12 @@ bool showconf=false;
       'phone_no':phone_no,
       'setup':false,
       'userid':userid,
-      'user_type':selected_categ
+      'user_type':selected_categ,
+      'BMI':0.0,
+      'weight':0.0,
+      'height':0.0,
+      'age':0.0
+
     };
     CollectionReference collection =
     FirebaseFirestore.instance.collection('Users');
@@ -222,6 +229,11 @@ validator: (value){
 
                                 //Password
                                 TextFormField(
+                                  onChanged: (val){
+                                    setState(() {
+                                      password=val.toString();
+                                    });
+                                  },
                                   validator: (value) {
                                     if (value != null) {
                                       bool passValid = RegExp(
@@ -275,6 +287,12 @@ validator: (value){
 
                                 //Confirm password
                                 TextFormField(
+                                  onSaved: (val){
+                                    confpass=val.toString();
+                                  },
+                                  onChanged: (val){
+confpass=val;
+                                  },
                                   decoration: InputDecoration(labelText: '*Confirm Password',
                                       suffixIcon: showconf?InkWell(
                                           onTap: (){
@@ -302,7 +320,7 @@ validator: (value){
                                     if(value!.isEmpty){
                                       return 'invalid';
                                     }
-                                    else if(value!=password){
+                                    else if(confpass!=password){
                                       return 'Does not match';
                                     }
                                     return null;

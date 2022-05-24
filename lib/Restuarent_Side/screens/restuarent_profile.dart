@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:discoveryourplate/Database/database.dart';
 import 'package:discoveryourplate/Derliveryboy/addworker.dart';
 import 'package:discoveryourplate/Derliveryboy/manageworkers.dart';
 import 'package:discoveryourplate/Derliveryboy/remove_worker.dart';
@@ -10,6 +11,7 @@ import 'package:discoveryourplate/User_Side/modal/constants.dart';
 import 'package:discoveryourplate/User_Side/modal/restuarent_modal.dart';
 import 'package:discoveryourplate/User_Side/modal/user_modal.dart';
 import 'package:discoveryourplate/hybrid_screens/wrapper.dart';
+import 'package:discoveryourplate/modals/constants.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
@@ -29,11 +31,11 @@ class Restuarent_Profile_screen extends StatefulWidget {
       _Restuarent_Profile_screenState();
 }
 
-bool _switch = true;
+
 
 class _Restuarent_Profile_screenState extends State<Restuarent_Profile_screen> {
-
-
+  bool _switch = true;
+      Database database=Database();
 
   Future<Restuarent_Modal?> fetchprofiledata() async {
     Restuarent_Modal ? user;
@@ -54,9 +56,12 @@ class _Restuarent_Profile_screenState extends State<Restuarent_Profile_screen> {
            restuarent_doc_id:element.id ,
            restuarent_image: fetcheddata['image_url'],
            restuarent_name: fetcheddata['Restuarent_name'],
-           status: fetcheddata['status']
+           status: fetcheddata['status'],
          );
+       _switch=fetcheddata['status'];
+
         }
+
       });
     }).then((value) {
 
@@ -77,6 +82,7 @@ class _Restuarent_Profile_screenState extends State<Restuarent_Profile_screen> {
   Widget build(BuildContext context) {
 
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
         elevation: 0,
         backgroundColor: Colors.white,
@@ -98,13 +104,20 @@ class _Restuarent_Profile_screenState extends State<Restuarent_Profile_screen> {
             children: [
               snapshot.data!.restuarent_image!.isEmpty?
               CircleAvatar(
-                backgroundImage:AssetImage("images/a.png"),
                 radius: 40,
+                child: CircleAvatar(
+                  backgroundImage:AssetImage("images/a.png"),
+                  radius: 38,
+                ),
               ):
               CircleAvatar(
-                backgroundImage:NetworkImage(snapshot.data!.restuarent_image.toString()),
-
                 radius: 40,
+                backgroundColor: mycolor,
+                child: CircleAvatar(
+                  backgroundImage:NetworkImage(snapshot.data!.restuarent_image.toString()),
+
+                  radius: 36,
+                ),
               ),
               SizedBox(
                 height: MediaQuery.of(context).size.height * 0.03,
@@ -132,6 +145,7 @@ class _Restuarent_Profile_screenState extends State<Restuarent_Profile_screen> {
               ),
 
               ListTile(
+
                 leading: Text(
                   "Open /Close",
                   style: TextStyle(
@@ -145,7 +159,15 @@ class _Restuarent_Profile_screenState extends State<Restuarent_Profile_screen> {
                   trackColor: _switch?MaterialStateProperty.all(mycolor):MaterialStateProperty.all(Colors.white),
                   value: _switch,
                   onChanged: (value) {
-                  },
+
+                      _switch=value;
+
+      database.updateRestuarentStatus(status: value).then((value) {
+        setState(() {
+
+        });
+      });
+                    },
                 ),
               ),
               ListTile(

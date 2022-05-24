@@ -4,6 +4,7 @@ import 'package:discoveryourplate/User_Side/modal/constants.dart';
 import 'package:discoveryourplate/hybrid_screens/auth.dart';
 import 'package:discoveryourplate/hybrid_screens/otp_screen.dart';
 import 'package:discoveryourplate/hybrid_screens/sign_up_screen.dart';
+import 'package:discoveryourplate/modals/constants.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
@@ -92,7 +93,7 @@ bool showconf=false;
                             height: MediaQuery.of(context).size.height * 0.015,
                           ),
                           Text(
-                            "Welcome Back",
+                            "Discover Your Plate",
                             style: TextStyle(
                                 color: Color(0xff2C2627),
                                 fontFamily: 'ProximaNova-Regular',

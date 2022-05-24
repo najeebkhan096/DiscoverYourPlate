@@ -1,4 +1,7 @@
+import 'package:discoveryourplate/Chat/chatscreen.dart';
+import 'package:discoveryourplate/Database/database.dart';
 import 'package:discoveryourplate/Restuarent_Side/modals/product.dart';
+import 'package:discoveryourplate/User_Side/modal/user_modal.dart';
 import 'package:discoveryourplate/User_Side/widgets/bottom_navigation_bar.dart';
 import 'package:discoveryourplate/User_Side/modal/constants.dart';
 import 'package:flutter/material.dart';
@@ -13,6 +16,22 @@ class Category_Screen extends StatefulWidget {
 
 class _Category_ScreenState extends State<Category_Screen> {
   @override
+  void _showErrorDialog(String msg) {
+    showDialog(
+        context: context,
+        builder: (ctx) => AlertDialog(
+          title: Text('Alert'),
+          content: Text(msg),
+          actions: <Widget>[
+            FlatButton(
+              child: Text('Okay'),
+              onPressed: () {
+                Navigator.of(ctx).pop();
+              },
+            )
+          ],
+        ));
+  }
   List<Product> categores_view_list = [];
   int _quantity = 0;
 String title='';
@@ -50,210 +69,191 @@ String title='';
                 ? Text("No Item")
                 : ListView.builder(
                     itemBuilder: (ctx, index) {
-                      return Padding(
-                        padding: const EdgeInsets.only(
-                            left: 10, right: 10, top: 10, bottom: 8),
+                      return Card(
+                        elevation: 10,
+                        margin: EdgeInsets.only(left: 10,right: 10,bottom: 10),
                         child: Container(
-                          height: MediaQuery.of(context).size.height * 0.15,
-                          child: ListTile(
-                            leading: ClipRRect(
-                              borderRadius: BorderRadius.circular(6),
-                              child: Container(
-                                height: MediaQuery.of(context).size.height * 07,
-                                width: MediaQuery.of(context).size.width * 0.26,
-                                child:
-                                    categores_view_list[index].imageurl!.isEmpty
-                                        ? Center(child: Text(""))
-                                        : FittedBox(
-                                            fit: BoxFit.fill,
-                                            child: Image.network(
-                                                categores_view_list[index]
-                                                    .imageurl
-                                                    .toString())),
-                              ),
-                            ),
-                            title: Text(
-                              categores_view_list[index].title.toString(),
-                              style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  fontFamily: 'Proxima Nova Condensed Bold'),
-                            ),
-                            subtitle: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  categores_view_list[index]
-                                      .subtitle
-                                      .toString(),
+                          padding: EdgeInsets.all(10),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Container(
+                                padding:  EdgeInsets.only(
+                                    left: 10,),
+                                child: Text("Restuarent name : "+
+                                  categores_view_list[index].Restuarent_name.toString(),
                                   style: TextStyle(
-                                    fontFamily: 'Proxima Nova Alt Regular.otf',
-                                    color: Color(0xff131010),
+                                      fontWeight: FontWeight.bold,
+                                      fontFamily: 'Proxima Nova Condensed Bold'),
+                                ),
+                              ),
+                              SizedBox(height: 10,),
+
+                              ListTile(
+                                leading: ClipRRect(
+                                  borderRadius: BorderRadius.circular(6),
+                                  child: Container(
+                                    height: MediaQuery.of(context).size.height * 1,
+                                    width: MediaQuery.of(context).size.width * 0.26,
+                                    child:
+                                        categores_view_list[index].imageurl!.isEmpty
+                                            ? Center(child: Text(""))
+                                            : FittedBox(
+                                                fit: BoxFit.fill,
+                                                child: Image.network(
+                                                    categores_view_list[index]
+                                                        .imageurl
+                                                        .toString())),
                                   ),
                                 ),
-                                SizedBox(
-                                  height: MediaQuery.of(context).size.height *
-                                      0.015,
+                                title: Text(
+                                  categores_view_list[index].title.toString(),
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontFamily: 'Proxima Nova Condensed Bold'),
                                 ),
-                                Text(
-                                    '\$${categores_view_list[index].price.toString()}',
-                                    style: TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                        fontFamily: 'SFUIText-Semibold')),
-                              ],
-                            ),
-                            trailing: InkWell(
-                              onTap: () {
-                                if(cart_list.contains(categores_view_list[index])){
-                                  Fluttertoast.showToast(
-                                      msg: "Already Added to Cart",
-                                      toastLength: Toast.LENGTH_SHORT,
-                                      gravity: ToastGravity.CENTER,
-                                      timeInSecForIosWeb: 1,
-                                      backgroundColor: Colors.red,
-                                      textColor: Colors.white,
-                                      fontSize: 16.0);
-                                }
-                                else{
-                                  cart_list.add(categores_view_list[index]);
-                                  Fluttertoast.showToast(
-                                      msg: "Added to Cart",
-                                      toastLength: Toast.LENGTH_SHORT,
-                                      gravity: ToastGravity.CENTER,
-                                      timeInSecForIosWeb: 1,
-                                      backgroundColor: Colors.red,
-                                      textColor: Colors.white,
-                                      fontSize: 16.0);
-                                }
-
-
-                                },
-                              child: Container(
-                                  decoration: BoxDecoration(
-                                      color: Colors.green,
-                                      borderRadius: BorderRadius.circular(5)),
-                                  height:
-                                      MediaQuery.of(context).size.height * 0.05,
-                                  width:
-                                      MediaQuery.of(context).size.width * 0.2,
-                                  margin: EdgeInsets.only(bottom: 24),
-                                  child: Center(
-                                    child: Text(
-                                      "Add to Cart",
-                                      style: TextStyle(color: Colors.white),
+                                subtitle: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      categores_view_list[index]
+                                          .subtitle
+                                          .toString(),
+                                      style: TextStyle(
+                                        fontFamily: 'Proxima Nova Alt Regular.otf',
+                                        color: Color(0xff131010),
+                                      ),
                                     ),
-                                  )),
-                            ),
+                                    SizedBox(
+                                      height: MediaQuery.of(context).size.height *
+                                          0.005,
+                                    ),
+                                    Text(
+                                        'PKR${categores_view_list[index].price.toString()}',
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                            fontFamily: 'SFUIText-Semibold')),
+                                  ],
+                                ),
+                                trailing: InkWell(
+                                  onTap: () {
+
+
+                                    if(cart_list.any((element) => element.product_doc_id==categores_view_list[index].product_doc_id)
+                                    ){
+                                      Fluttertoast.showToast(
+                                          msg: "Already Added to Cart",
+                                          toastLength: Toast.LENGTH_SHORT,
+                                          gravity: ToastGravity.CENTER,
+                                          timeInSecForIosWeb: 1,
+                                          backgroundColor: Colors.red,
+                                          textColor: Colors.white,
+                                          fontSize: 16.0);
+                                    }
+                                    else{
+                                      if(cart_list.length>0){
+                                        if(cart_list[0].restuarent_id!=categores_view_list[index].restuarent_id){
+                                          _showErrorDialog("You can not order from two different Resturents  at a time right now ");
+                                        }
+                                        else{
+                                          cart_list.add(categores_view_list[index]);
+                                          Fluttertoast.showToast(
+                                              msg: "Added to Cart",
+                                              toastLength: Toast.LENGTH_SHORT,
+                                              gravity: ToastGravity.CENTER,
+                                              timeInSecForIosWeb: 1,
+                                              backgroundColor: Colors.red,
+                                              textColor: Colors.white,
+                                              fontSize: 16.0);
+                                        }
+                                      }
+                                      else{
+                                        cart_list.add(categores_view_list[index]);
+                                        Fluttertoast.showToast(
+                                            msg: "Added to Cart",
+                                            toastLength: Toast.LENGTH_SHORT,
+                                            gravity: ToastGravity.CENTER,
+                                            timeInSecForIosWeb: 1,
+                                            backgroundColor: Colors.red,
+                                            textColor: Colors.white,
+                                            fontSize: 16.0);
+
+                                      }
+
+                                    }
+
+
+                                    },
+                                  child: Container(
+                                      decoration: BoxDecoration(
+                                          color: Colors.green,
+                                          borderRadius: BorderRadius.circular(5)),
+                                      height:
+                                          MediaQuery.of(context).size.height * 0.05,
+                                      width:
+                                          MediaQuery.of(context).size.width * 0.2,
+                                      margin: EdgeInsets.only(bottom: 24),
+                                      child: Center(
+                                        child: Text(
+                                          "Add to Cart",
+                                          style: TextStyle(color: Colors.white,fontSize: 12.5),
+                                        ),
+                                      )),
+                                ),
+                              ),
+                              SizedBox(height: 15,),
+                              Container(
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    InkWell(
+                                      onTap: (){
+                                        MyUser chatter=MyUser(
+                                            categores_view_list[index].restuarent_id,
+                                            '',
+                                            categores_view_list[index].Restuarent_name
+                                        );
+                                        Database socialdatabase=Database();
+                                        socialdatabase
+                                            .getUserInfogetChats(
+                                            categores_view_list[index].restuarent_id
+                                        )
+                                            .then((value) {
+                                          print(
+                                              "so final chatroom id is " +
+                                                  value.toString());
+                                          Navigator.of(context).pushNamed(
+                                            Chat_Screen.routename,
+                                            arguments: [
+                                              value.toString(),
+                                              chatter
+                                            ],
+                                          );
+
+                                          //
+                                        });
+                                      },
+                                      child:  Container(
+
+                                          margin: EdgeInsets.only(right: 30),
+                                          child:Icon(Icons.message,color: Colors.teal,)),
+                                    ),
+
+                                    Container(
+
+                                        margin: EdgeInsets.only(left: 30,right: 30),
+                                        child:Icon(Icons.whatsapp,color: Colors.teal,)),
+                                    Container(
+
+                                        margin: EdgeInsets.only(left: 30,right: 30),
+                                        child:Icon(Icons.phone,color: Colors.teal,)),
+                                  ],
+                                ),
+                              ),
+                              SizedBox(height: 10,),
+                            ],
                           ),
-//                       child: Row(
-//                         children: [
-//                           Container(
-//                             height: MediaQuery.of(context).size.height * 0.13,
-//                             width: MediaQuery.of(context).size.width * 0.94,
-//                             child: Row(
-//                               children: [
-//                                 InkWell(
-//                                   onTap: (){
-//                                     print(categores_view_list[index].id);
-//                                   },
-//                                   child: ClipRRect(
-//                                     borderRadius: BorderRadius.circular(6),
-//                                     child: Container(
-//                                       height: MediaQuery.of(context).size.height * 07,
-//                                       width: MediaQuery.of(context).size.width * 0.26,
-//                                       child: categores_view_list[index].imageurl!
-//                                           .isEmpty?Center(child: Text("")):FittedBox(
-//                                           fit: BoxFit.fill,
-//                                           child: Image.network(
-//                                               categores_view_list[index].imageurl.toString())),
-//                                     ),
-//                                   ),
-//                                 ),
-//                                 SizedBox(
-//                                   width: MediaQuery.of(context).size.width * 0.025,
-//                                 ),
-//                                 Container(
-//                                   height: MediaQuery.of(context).size.height * 1,
-//                                   width: MediaQuery.of(context).size.width * 0.4,
-//                                   child: FittedBox(
-//                                     fit: BoxFit.contain,
-//                                     child: Column(
-//                                       crossAxisAlignment: CrossAxisAlignment.start,
-//                                       children: [
-//                                         Text(
-//                                           categores_view_list[index].title.toString(),
-//                                           style: TextStyle(
-//                                               fontWeight: FontWeight.bold,
-//                                               fontFamily:
-//                                               'Proxima Nova Condensed Bold'),
-//                                         ),
-//                                         SizedBox(
-//                                           height: MediaQuery.of(context).size.height *
-//                                               0.01,
-//                                         ),
-//                                         Text(
-//                                           categores_view_list[index].subtitle.toString(),
-//                                           style: TextStyle(
-//                                             fontFamily:
-//                                             'Proxima Nova Alt Regular.otf',
-//                                             color: Color(0xff131010),
-//                                           ),
-//                                         ),
-//                                         SizedBox(
-//                                           height: MediaQuery.of(context).size.height *
-//                                               0.015,
-//                                         ),
-//                                         Text(
-//                                             '\$${categores_view_list[index].price.toString()}',
-//                                             style: TextStyle(
-//                                                 fontWeight: FontWeight.bold,
-//                                                 fontFamily: 'SFUIText-Semibold')),
-//
-//                                       ],
-//                                     ),
-//                                   ),
-//                                 ),
-//                                 SizedBox(
-//                                   width: MediaQuery.of(context).size.width * 0.028,
-//                                 ),
-//
-//                                 SizedBox(
-//                                   width: MediaQuery.of(context).size.width * 0.055,
-//                                 ),
-//                                 InkWell(
-//                                   onTap: () {
-//
-// cart_list.add(
-//   categores_view_list[index]
-// );
-// Fluttertoast.showToast(
-//     msg: "Added to Cart",
-//     toastLength: Toast.LENGTH_SHORT,
-//     gravity: ToastGravity.CENTER,
-//     timeInSecForIosWeb: 1,
-//     backgroundColor: Colors.red,
-//     textColor: Colors.white,
-//     fontSize: 16.0
-// );
-//
-//                                   },
-//                                   child: Container(
-//
-//                                       decoration: BoxDecoration(
-//                                         color: Colors.green,
-//                                         borderRadius: BorderRadius.circular(5)
-//                                       ),
-//                                       height: MediaQuery.of(context).size.height*0.04,
-//                                       width: MediaQuery.of(context).size.width*0.18,
-//                                       margin: EdgeInsets.only(bottom: 24),
-//                                       child: Text("Add to Cart",style: TextStyle(color: Colors.white),)
-//
-//                                   ),
-//                                 ),
-//                               ],
-//                             ),
-//                           )
-//                         ],
-//                       ),
+
                         ),
                       );
                     },

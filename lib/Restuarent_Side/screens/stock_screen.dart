@@ -1,6 +1,9 @@
 import 'package:discoveryourplate/Restuarent_Side/screens/menu_screen.dart';
-import 'package:discoveryourplate/Restuarent_Side/widgets/active_stock.dart';
+import 'package:discoveryourplate/Restuarent_Side/widgets/activestock.dart';
+import 'package:discoveryourplate/Restuarent_Side/widgets/nonactivestock.dart';
+
 import 'package:discoveryourplate/User_Side/modal/constants.dart';
+import 'package:discoveryourplate/modals/constants.dart';
 import 'package:flutter/material.dart';
 
 class Stock_Screen extends StatefulWidget {
@@ -60,6 +63,20 @@ class _Stock_ScreenState extends State<Stock_Screen>
             "Stock",
             style: TextStyle(color: Colors.black),
           ),
+        actions: [
+ Container(
+   margin: EdgeInsets.only(right: width*0.03),
+   child: CircleAvatar(
+     backgroundColor: Colors.black,
+     child: IconButton(
+       onPressed: (){
+Navigator.of(context).pushNamed(Menu_Screen.routename);
+       },
+       icon: Icon(Icons.add),
+     ),
+   ),
+ ),
+        ],
         ),
         body: SingleChildScrollView(
           child: Container(
@@ -109,7 +126,7 @@ width: width*0.3,
                         child: Tab(
                           child: // Adobe XD layer: 'Second Opinion' (text)
                               Text(
-                            'InProgress',
+                            'Non Active',
                             textHeightBehavior: TextHeightBehavior(
                                 applyHeightToFirstAscent: false),
                             textAlign: TextAlign.left,
@@ -125,7 +142,7 @@ width: width*0.3,
                     controller: _controller,
                     children: [
                       Active_Stock(),
-                      Active_Stock(),
+                     NonActive_Stock()
                     ],
                   ),
                 ),
@@ -137,82 +154,4 @@ width: width*0.3,
     );
   }
 }
-// body: Container(
-//   child: Column(
-//     children: [
-//       Card(
-//         elevation: 0,
-//         child: Container(
-//           height: MediaQuery.of(context).size.height * 0.15,
-//           padding: EdgeInsets.only(top: 15),
-//           child: Row(
-//             children: [
-//               Container(
-//                 margin: EdgeInsets.only(left: 15),
-//                 height: MediaQuery.of(context).size.height * 0.07,
-//                 width: MediaQuery.of(context).size.width * 0.45,
-//                 child: RaisedButton(
-//                   elevation: 0.1,
-//                   child: Text(
-//                     'Active',
-//                     style: TextStyle(
-//                         fontSize: 16,
-//                         color: isrecieved
-//                             ? Colors.white
-//                             : Color(0xffA4B0BE)),
-//                   ),
-//                   shape: RoundedRectangleBorder(
-//                     borderRadius: BorderRadius.circular(10),
-//                   ),
-//                   color: isrecieved ? mycolor : Color(0xffF9F9F9),
-//                   textColor: Colors.white,
-//                   onPressed: () {
-//                     setState(() {
-//                       isrecieved = true;
-//                       print(isrecieved);
-//                     });
-//
-//                     // Navigator.of(context).pushNamed(Email_Screen.routename);
-//                   },
-//                 ),
-//               ),
-//               SizedBox(
-//                 width: MediaQuery.of(context).size.width * 0.01,
-//               ),
-//               Container(
-//                 height: MediaQuery.of(context).size.height * 0.07,
-//                 width: MediaQuery.of(context).size.width * 0.45,
-//                 child: RaisedButton(
-//                   elevation: 0.6,
-//                   child: Text(
-//                     'Non Active',
-//                     style: TextStyle(
-//                         fontSize: 16,
-//                         color: isrecieved
-//                             ? Color(0xffA4B0BE)
-//                             : Colors.white),
-//                   ),
-//                   shape: RoundedRectangleBorder(
-//                     borderRadius: BorderRadius.circular(10),
-//                   ),
-//                   color: isrecieved ? Color(0xffF9F9F9) : mycolor,
-//                   textColor: Colors.white,
-//                   onPressed: () {
-//                     setState(() {
-//                       isrecieved = false;
-//                     });
-//                     // Navigator.of(context).pushNamed(Email_Screen.routename);
-//                   },
-//                 ),
-//               ),
-//             ],
-//           ),
-//         ),
-//       ),
-//       SizedBox(
-//         height: MediaQuery.of(context).size.height * 0.015,
-//       ),
-//       // Active_Stock()
-//     ],
-//   ),
-// ),
+

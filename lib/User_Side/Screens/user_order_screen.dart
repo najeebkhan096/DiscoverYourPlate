@@ -302,6 +302,8 @@ double rating=1;
         backgroundColor: Colors.white,
         appBar: AppBar(
           elevation: 0,
+          centerTitle: true,
+          title: Text("Order Status",style: TextStyle(color: Colors.black),),
           backgroundColor: Colors.white,
           foregroundColor: Colors.black,
           iconTheme: IconThemeData(

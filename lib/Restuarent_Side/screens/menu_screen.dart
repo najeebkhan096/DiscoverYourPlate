@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:discoveryourplate/Restuarent_Side/modals/product.dart';
 import 'package:discoveryourplate/User_Side/modal/constants.dart';
+import 'package:discoveryourplate/modals/constants.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
@@ -50,6 +51,8 @@ Future uploadFile() async {
           'category':category,
           'status':true,
           'restuarent_id':restuarent_id,
+          'Restuarent_name':Restuarent_name.toString(),
+          'sales':0
 
         }).then(
                 (value) {

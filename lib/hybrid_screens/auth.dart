@@ -12,7 +12,7 @@ class AuthService {
   // create user obj based on firebase user
 
   MyUser? _userFromFirebaseUser(User? user) {
-    return user != null ? MyUser(user.uid) : null;
+    return user != null ? MyUser(user.uid,'','') : null;
   }
 
 
@@ -68,4 +68,3 @@ class AuthService {
   }
 
 }
-

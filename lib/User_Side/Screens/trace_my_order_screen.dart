@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:discoveryourplate/User_Side/widgets/bottom_navigation_bar.dart';
 import 'package:discoveryourplate/User_Side/modal/constants.dart';
+import 'package:discoveryourplate/modals/constants.dart';
 import 'package:flutter/material.dart';
 
 class Trace_Status_Screen extends StatefulWidget {

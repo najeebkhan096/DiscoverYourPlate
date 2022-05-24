@@ -20,9 +20,10 @@ class Order{
   String ? worker_cnic;
   String ? worker_name;
   Position ? worker_position;
-
+String ? restuarent_id;
 
   Order({
+    this.restuarent_id,
     this.worker_position,
     this.worker_name,
     this.worker_cnic,

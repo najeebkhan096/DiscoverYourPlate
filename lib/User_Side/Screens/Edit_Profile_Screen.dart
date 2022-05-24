@@ -3,11 +3,13 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:discoveryourplate/User_Side/modal/user_modal.dart';
 import 'package:discoveryourplate/User_Side/widgets/clipper.dart';
 import 'package:discoveryourplate/hybrid_screens/auth.dart' as auth;
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 import 'package:path/path.dart' as Path;
 import 'package:cloud_firestore/cloud_firestore.dart' as cloudstore;
 
 import 'package:firebase_auth/firebase_auth.dart' as firebase_auth;
+
 import 'package:flutter/material.dart';
 
 import 'package:flutter_spinkit/flutter_spinkit.dart';
@@ -88,6 +90,7 @@ class _Edit_profile_ScreenState extends State<Edit_profile_Screen> {
             imageurl: fetcheddata['imageurl'].toString(),
             phone: fetcheddata['phone_no'].toString(),
             uid: user_id,
+            BMI: fetcheddata['BMI']
           );
         }
       });
@@ -100,7 +103,9 @@ class _Edit_profile_ScreenState extends State<Edit_profile_Screen> {
 
 
   Future UpdateData(String doc) async {
-
+    final FirebaseAuth auth = FirebaseAuth.instance;
+    User? currentuser = auth.currentUser;
+    currentuser!.updatePhotoURL(image_url.toString());
     Map<String, dynamic> data = {
       'username': username,
       'imageurl':image_url,

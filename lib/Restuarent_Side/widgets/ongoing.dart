@@ -42,6 +42,10 @@ class Restuarent_Ongoing_Orders extends StatelessWidget {
                   itemBuilder: (_, int index) {
                     final DocumentSnapshot document = precist[index];
                     return Card(
+                      margin: EdgeInsets.only(top: MediaQuery.of(context).size.height*0.02,left: MediaQuery.of(context).size.width*0.02,right: MediaQuery.of(context).size.width*0.02 ),
+               shape: RoundedRectangleBorder(
+                 borderRadius: BorderRadius.circular(10)
+               ),
                       elevation: 10,
                       child: Column(
                         children: [

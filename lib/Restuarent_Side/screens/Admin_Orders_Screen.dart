@@ -69,7 +69,14 @@ class _Admin_Order_ScreenState extends State<Admin_Order_Screen>
           length: 4,
           child: Scaffold(
             backgroundColor: Colors.white,
-
+appBar: AppBar(
+  elevation: 0,
+  backgroundColor: Colors.white,
+  centerTitle: true,
+  title: Text("Order",style: TextStyle(
+    color: Colors.black
+  ),),
+),
             body: ListView(
               children: [
                 SizedBox(height: height*0.025,),

@@ -1,6 +1,7 @@
 import 'package:discoveryourplate/Restuarent_Side/screens/menu_screen.dart';
-import 'package:discoveryourplate/Restuarent_Side/widgets/active_stock.dart';
+
 import 'package:discoveryourplate/User_Side/modal/constants.dart';
+import 'package:discoveryourplate/modals/constants.dart';
 import 'package:flutter/material.dart';
 
 
@@ -130,7 +131,7 @@ class _Stock_ScreenState extends State<Stock_Screen> {
             SizedBox(
               height: MediaQuery.of(context).size.height * 0.015,
             ),
-            Active_Stock()
+            // Active_Stock()
           ],
         ),
       ),

@@ -1,9 +1,11 @@
 
+import 'package:discoveryourplate/Chat/conversation.dart';
 import 'package:discoveryourplate/Restuarent_Side/screens/Admin_Orders_Screen.dart';
 import 'package:discoveryourplate/Restuarent_Side/screens/Restuarent_Dashboard.dart';
 import 'package:discoveryourplate/Restuarent_Side/screens/notification_screen.dart';
 import 'package:discoveryourplate/Restuarent_Side/screens/restuarent_profile.dart';
 import 'package:discoveryourplate/User_Side/Screens/Home_screen.dart';
+import 'package:discoveryourplate/User_Side/Screens/image_classification.dart';
 import 'package:discoveryourplate/User_Side/Screens/user_order_screen.dart';
 import 'package:discoveryourplate/User_Side/Screens/user_profile.dart';
 import 'package:flutter/material.dart';
@@ -53,7 +55,12 @@ class _User_Bottom_Navigation_BarState extends State<User_Bottom_Navigation_Bar>
             });
           }
           if(current_index==1){
-            print("hello");
+            Navigator.of(context).pushReplacementNamed(ImageClassification.routename).then((value) {
+              setState(() {
+
+              });
+            });
+
 
 
           }
@@ -63,9 +70,20 @@ class _User_Bottom_Navigation_BarState extends State<User_Bottom_Navigation_Bar>
 
               });
             });
-//
+
           }
+
           if(current_index==3){
+
+            Navigator.of(context).pushReplacementNamed(Conversation.id).then((value) {
+              setState(() {
+
+              });
+            });
+
+          }
+
+          if(current_index==4){
 
             Navigator.of(context).pushReplacementNamed(User_Profile_Screen.routname).then((value) {
               setState(() {
@@ -74,8 +92,6 @@ class _User_Bottom_Navigation_BarState extends State<User_Bottom_Navigation_Bar>
             });
 
           }
-
-
           print(current_index);
         },
         backgroundColor: Colors.white,
@@ -88,18 +104,18 @@ class _User_Bottom_Navigation_BarState extends State<User_Bottom_Navigation_Bar>
 
 
           NavigationDestination( icon:
-          Icon(
-            Icons.search,
-            color: Colors.green,
-          ),
-              label: "Search"),
+          Image.asset('images/tourist.png',height: MediaQuery.of(context).size.height*0.025,color: Colors.green,),
+              label: "Tourist"),
 
           NavigationDestination( icon: Icon(
             Icons.border_all,
             color: Colors.green,),label: "MyOrders",),
 
 
-
+          NavigationDestination( icon:  Icon(
+            Icons.message,
+            color: Colors.green,
+          ),label: "Chat"),
           NavigationDestination( icon:  Icon(
             Icons.account_circle,
             color: Colors.green,

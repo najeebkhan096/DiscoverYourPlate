@@ -2,7 +2,10 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:discoveryourplate/Restuarent_Side/modals/product.dart';
 import 'package:discoveryourplate/Restuarent_Side/screens/stock_screen.dart';
 import 'package:discoveryourplate/Restuarent_Side/widgets/Restuarent_bottom_navigation.dart';
+import 'package:discoveryourplate/BMI/BMI.dart';
 import 'package:discoveryourplate/User_Side/Screens/Edit_Profile_Screen.dart';
+import 'package:discoveryourplate/User_Side/Screens/Home_screen.dart';
+import 'package:discoveryourplate/User_Side/Screens/feedback.dart';
 import 'package:discoveryourplate/User_Side/modal/constants.dart';
 import 'package:discoveryourplate/User_Side/modal/restuarent_modal.dart';
 import 'package:discoveryourplate/User_Side/modal/user_modal.dart';
@@ -48,6 +51,7 @@ class _User_Profile_ScreenState extends State<User_Profile_Screen> {
             imageurl: fetcheddata['imageurl'].toString(),
             phone: fetcheddata['phone_no'].toString(),
             uid: user_id,
+            BMI: fetcheddata['BMI']
           );
         }
       });
@@ -55,10 +59,26 @@ class _User_Profile_ScreenState extends State<User_Profile_Screen> {
 
     return user;
   }
+  void _showErrorDialog(String msg) {
+    showDialog(
+        context: context,
+        builder: (ctx) => AlertDialog(
+          title: Text('Alert'),
+          content: Text(msg),
+          actions: <Widget>[
+            FlatButton(
+              child: Text('Okay'),
+              onPressed: () {
+                Navigator.of(ctx).pop();
+              },
+            )
+          ],
+        ));
+  }
 @override
   void initState() {
     // TODO: implement initState
-   current_index=3;
+   current_index=4;
     super.initState();
   }
   @override
@@ -152,7 +172,11 @@ class _User_Profile_ScreenState extends State<User_Profile_Screen> {
           ),
 
           ListTile(
-            onTap: () {},
+            onTap: () {
+              selected_restuarent==null?
+                  _showErrorDialog("Resturent is not selected"):
+              Navigator.of(context).pushNamed(Feedback_Screen.routename);
+            },
             leading: Text(
               "Feedback",
               style: TextStyle(
@@ -166,7 +190,25 @@ class _User_Profile_ScreenState extends State<User_Profile_Screen> {
               color: Color(0xff2E3034),
             ),
           ),
-
+          ListTile(
+            onTap: () {
+              // selected_restuarent==null?
+              // _showErrorDialog("Resturent is not selected"):
+              Navigator.of(context).pushNamed(CalculateBMI.routename);
+            },
+            leading: Text(
+              "BMI",
+              style: TextStyle(
+                  fontFamily: 'SFUIText-Regular',
+                  fontSize: 18,
+                  fontWeight: FontWeight.w500,
+                  color: Color(0xff2E3034)),
+            ),
+            trailing: Icon(
+              Icons.keyboard_arrow_right,
+              color: Color(0xff2E3034),
+            ),
+          ),
 
           ListTile(
             onTap: () async {

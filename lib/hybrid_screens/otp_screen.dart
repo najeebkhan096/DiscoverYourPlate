@@ -1,5 +1,6 @@
 import 'package:discoveryourplate/User_Side/modal/constants.dart';
 import 'package:discoveryourplate/hybrid_screens/Email_screen.dart';
+import 'package:discoveryourplate/modals/constants.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -170,16 +171,16 @@ class _OTP_ScreenState extends State<OTP_Screen> {
                   });
                 },
                   onAutoFillDisposeAction: AutofillContextAction.cancel,
-controller: textEditingController,
+                  controller: textEditingController,
                   autoDisposeControllers: true,
-                cursorColor: Colors.black,
+                  cursorColor: Colors.black,
                   pinTheme: PinTheme(
-                    activeColor: Colors.black,
-                    selectedColor: Colors.black,
-                    inactiveFillColor: Colors.black,
-                    disabledColor: Colors.black,
-                    activeFillColor: Colors.black,
-                    inactiveColor: Colors.black
+                      activeColor: Colors.black,
+                      selectedColor: Colors.black,
+                      inactiveFillColor: Colors.black,
+                      disabledColor: Colors.black,
+                      activeFillColor: Colors.black,
+                      inactiveColor: Colors.black
 
                   ),
                 ),

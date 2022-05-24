@@ -1,6 +1,6 @@
-
 import 'package:discoveryourplate/User_Side/Screens/Home_screen.dart';
 import 'package:discoveryourplate/User_Side/modal/constants.dart';
+import 'package:discoveryourplate/modals/constants.dart';
 import 'package:flutter/material.dart';
 
 
@@ -29,7 +29,7 @@ class _Enter_new_passwordState extends State<Enter_new_password> {
         ],
       );
 
-  }
+    }
     );
   }
 
@@ -53,7 +53,7 @@ class _Enter_new_passwordState extends State<Enter_new_password> {
   //
   // }
 
-String password='';
+  String password='';
 
   String newpassword='';
 
@@ -172,6 +172,7 @@ String password='';
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(10),
                           ),
+
                           color: mycolor,
                           textColor: Colors.white70,
                           onPressed: () {
@@ -179,7 +180,8 @@ String password='';
                             // SnackBar mysnackbar=SnackBar(content: Text("Check your email and change password from there"),duration: Duration(seconds: 5),);
                             // Scaffold.of(context).showSnackBar(mysnackbar);
 
-                         Navigator.of(context).pushNamed(Home_Screen.routename);
+                            Navigator.of(context).pushNamed(Home_Screen.routename);
+
                           },
                         ),
                       ),
@@ -189,7 +191,7 @@ String password='';
               ),
             );
           })
-      
+
       ),
     );
   }
