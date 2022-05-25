@@ -84,7 +84,7 @@ class MyApp extends StatelessWidget {
               return data;
 
               },
-            child: Wrapper()),
+            child: HomePage(cameras!)),
 
         routes: {
           'Chat_Screen':(context)=>Chat_Screen(),
