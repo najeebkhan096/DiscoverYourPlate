@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:discoveryourplate/Restuarent_Side/modals/product.dart';
 import 'package:discoveryourplate/User_Side/modal/constants.dart';
+import 'package:discoveryourplate/User_Side/modal/user_modal.dart';
 import 'package:discoveryourplate/modals/constants.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -23,11 +24,14 @@ class Menu_Screen extends StatefulWidget {
 class _Menu_ScreenState extends State<Menu_Screen> {
 
 String category="Burgers";
+String  selectedsize="Small";
 String ? title;
 String ? subtitle;
 double ? price;
 
 List<String> category_list=["Burgers","Pizza","Snacks","Drinks",'Shakes'];
+List<String> size=["Small","Medium","Large","Extra Large"];
+
 File ? image_file;
 bool isloading=false;
 
@@ -50,6 +54,8 @@ Future uploadFile() async {
           'url': value,
           'category':category,
           'status':true,
+          'size':selectedsize,
+          'restuarent_phone':currentuser!.phone,
           'restuarent_id':restuarent_id,
           'Restuarent_name':Restuarent_name.toString(),
           'sales':0
@@ -121,7 +127,7 @@ Future<void> _submit() async {
   try {
 
     if(image_file!=null){
-    uploadFile();
+    await uploadFile();
   }
 
 else{
@@ -280,6 +286,37 @@ title=value;
                   )
 
                 ),
+
+
+                //size
+                Container(
+                    margin: EdgeInsets.only(left: 15, top: 20, right: 20),
+                    height: 58,
+                    width: 336,
+                    decoration: BoxDecoration(
+                        color: Color(0xffF9F9F9),
+                        borderRadius: BorderRadius.all(Radius.circular(4))),
+                    child: DropdownButton(
+                      value: selectedsize,
+                      onChanged: (value) {
+                        setState(() {
+                          selectedsize = value as String;
+                        });
+                      },
+                      icon: Icon(Icons.arrow_drop_down),
+                      isExpanded: true,
+                      items: size
+                          .map((e) => DropdownMenuItem(
+                          value: e, child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Text(e),
+                      )))
+                          .toList(),
+                    )
+
+                ),
+
+
                 Container(
                   margin: EdgeInsets.only(left: 15, top: 20, right: 20),
                   height: 58,

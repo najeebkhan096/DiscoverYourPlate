@@ -1,4 +1,5 @@
 import 'package:camera/camera.dart';
+import 'package:discoveryourplate/Chat/RestuarentConversation.dart';
 import 'package:discoveryourplate/Chat/chatscreen.dart';
 import 'package:discoveryourplate/Chat/conversation.dart';
 import 'package:discoveryourplate/Derliveryboy/HomePage/worker_login.dart';
@@ -15,6 +16,8 @@ import 'package:discoveryourplate/Restuarent_Side/screens/notification_screen.da
 import 'package:discoveryourplate/Restuarent_Side/screens/restuarent_profile.dart';
 import 'package:discoveryourplate/Restuarent_Side/screens/stock_screen.dart';
 import 'package:discoveryourplate/BMI/BMI.dart';
+import 'package:discoveryourplate/User_Side/Screens/DetailScreen.dart';
+import 'package:discoveryourplate/User_Side/Screens/PedoMeter.dart';
 import 'package:discoveryourplate/User_Side/Screens/cart_screen.dart';
 import 'package:discoveryourplate/User_Side/Screens/category_screen.dart';
 import 'package:discoveryourplate/User_Side/Screens/feedback.dart';
@@ -41,8 +44,8 @@ import 'package:provider/provider.dart';
 List<CameraDescription>? cameras=[];
 
 void main() async{
-  WidgetsFlutterBinding.ensureInitialized();
 
+  WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
   Stripe.publishableKey = 'pk_test_51K1GtiD5z0PA4b4fVeiLsLZeybhP8WNeFOf4If4PMWgTDVhAlHR3C1h2i9IeVRl0yWjUDmrccpgR3Is3qjKYNcG700YBFcIehs';
 
@@ -72,24 +75,34 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
-        providers: [
+
+      providers: [
+
           Provider<AuthService>(create: (_)=>AuthService()),
+
         ],
 
       child: MaterialApp(
         home: WillPopScope(
 
-            onWillPop: ()async{
-              bool  data=(await _showErrorDialog(context)) as bool;
+            onWillPop: () async {
+
+              bool  data=( await _showErrorDialog(context)) as bool;
               return data;
 
               },
-            child: HomePage(cameras!)),
+            child: Wrapper()
+
+        ),
 
         routes: {
+
+          'RestuarentConversation':(context)=>RestuarentConversation(),
+          'LiveDetection':(context)=>LiveDetection(),
+          'StepsPedoMeter':(context)=>StepsPedoMeter(),
           'Chat_Screen':(context)=>Chat_Screen(),
           'Conversation':(context)=>Conversation(),
-          'CalculateBMI':(context)=>CalculateBMI(),
+          'Calculatebmr':(context)=>Calculatebmr(),
           'Tourist_Products_Screen':(context)=>Tourist_Products_Screen(),
           'ImageClassification':(context)=>ImageClassification(),
           'Feedback_Screen':(context)=>Feedback_Screen(),
@@ -117,8 +130,8 @@ class MyApp extends StatelessWidget {
           'Wrapper':(context)=>Wrapper(),
           'Category_Screen':(context)=>Category_Screen(),
           'Cart_Screen':(context)=>Cart_Screen(),
-
-          'User_Profile_Screen':(context)=>User_Profile_Screen()
+          'User_Profile_Screen':(context)=>User_Profile_Screen(),
+          'DetailScreen':(context)=>DetailScreen()
 
         },
       ),

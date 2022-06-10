@@ -6,6 +6,7 @@ import 'package:discoveryourplate/User_Side/widgets/bottom_navigation_bar.dart';
 import 'package:discoveryourplate/User_Side/modal/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class Category_Screen extends StatefulWidget {
   static const routename = "Category_Screen";
@@ -133,6 +134,19 @@ String title='';
                                         style: TextStyle(
                                             fontWeight: FontWeight.bold,
                                             fontFamily: 'SFUIText-Semibold')),
+
+
+                                    SizedBox(
+                                      height: MediaQuery.of(context).size.height *
+                                          0.005,
+                                    ),
+                                    Text(
+                                    categores_view_list[index].size.toString()
+                                    ,
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                            fontFamily: 'SFUIText-Semibold')),
+
                                   ],
                                 ),
                                 trailing: InkWell(
@@ -239,14 +253,28 @@ String title='';
                                           child:Icon(Icons.message,color: Colors.teal,)),
                                     ),
 
-                                    Container(
+                                    InkWell(
+                                      onTap: ()async{
 
-                                        margin: EdgeInsets.only(left: 30,right: 30),
-                                        child:Icon(Icons.whatsapp,color: Colors.teal,)),
-                                    Container(
+                                        String url = "whatsapp://send?phone=${categores_view_list[index].restuarentphone}&text=Hello World!";
 
-                                        margin: EdgeInsets.only(left: 30,right: 30),
-                                        child:Icon(Icons.phone,color: Colors.teal,)),
+                                        await launch(url);
+                                      },
+                                      child: Container(
+
+                                          margin: EdgeInsets.only(left: 30,right: 30),
+                                          child:Icon(Icons.whatsapp,color: Colors.teal,)),
+                                    ),
+                                    InkWell(
+                                      onTap: ()async{
+                                        await  launch('tel://${categores_view_list[index].restuarentphone}');
+
+                                      },
+                                      child: Container(
+
+                                          margin: EdgeInsets.only(left: 30,right: 30),
+                                          child:Icon(Icons.phone,color: Colors.teal,)),
+                                    ),
                                   ],
                                 ),
                               ),

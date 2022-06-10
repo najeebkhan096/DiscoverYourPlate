@@ -40,7 +40,7 @@ class _LiveDetectionState extends State<LiveDetection> {
     return AspectRatio(
       aspectRatio:
 
-      controller!.value.aspectRatio/1
+      controller!.value.aspectRatio/2.5
       ,
       child: CameraPreview(
         controller!,
@@ -49,7 +49,8 @@ class _LiveDetectionState extends State<LiveDetection> {
     );
   }
 
-  Future loadmodal()async{
+  Future loadmodal() async {
+
     await Tflite.loadModel(
         model: "LiveDetectionAssets/ssd_mobilenet.tflite",
         labels: "LiveDetectionAssets/ssd_mobilenet.txt",
@@ -63,14 +64,14 @@ class _LiveDetectionState extends State<LiveDetection> {
     if (recognitionList == null) return [];
     if (cameraimage!.height == null || cameraimage!.width == null) return [];
 
-    double factorX = screen.width;
-    double factorY = cameraimage!.height / cameraimage!.width * screen.width;
+    double factorX = screen.width+30;
+    double factorY = cameraimage!.height -600/ cameraimage!.width * screen.width/2;
     Color blue = Color.fromRGBO(37, 213, 253, 1.0);
     return recognitionList!.map((re) {
       return Positioned(
         left: re["rect"]["x"] * factorX,
-        top: re["rect"]["y"] * factorY,
-        width: re["rect"]["w"] * factorX,
+        top: re["rect"]["y"] * factorY+40,
+        width: re["rect"]["w"] * factorX-30,
         height: re["rect"]["h"] * factorY,
         child: Container(
           decoration: BoxDecoration(
@@ -80,12 +81,14 @@ class _LiveDetectionState extends State<LiveDetection> {
               width: 2,
             ),
           ),
-          child: Text(
-            "${re["detectedClass"]} ${(re["confidenceInClass"] * 100).toStringAsFixed(0)}%",
-            style: TextStyle(
-              background: Paint()..color = Colors.pink,
-              color: Colors.white,
-              fontSize: 12.0,
+          child: Center(
+            child: Text(
+              "${re["detectedClass"]} ${(re["confidenceInClass"] * 100).toStringAsFixed(0)}%",
+              style: TextStyle(
+                background: Paint()..color = Colors.pink,
+                color: Colors.white,
+                fontSize: 12.0,
+              ),
             ),
           ),
         ),
@@ -95,57 +98,58 @@ class _LiveDetectionState extends State<LiveDetection> {
 
 
   Future runModalIoFrame()async{
-  recognitionList= await Tflite.detectObjectOnFrame(
-        bytesList: cameraimage!.planes.map((plane) {return plane.bytes;}).toList(),// required
-        model: "SSDMobileNet",
-        imageHeight: cameraimage!.height,
-        imageWidth: cameraimage!.width,
-        imageMean: 127.5,   // defaults to 127.5
-        imageStd: 127.5,    // defaults to 127.5
-        rotation: 90,       // defaults to 90, Android only
-        numResultsPerClass: 1,      // defaults to 5
-        threshold: 0.4,     // defaults to 0.1
-    // defaults to true
+
+    recognitionList= await Tflite.detectObjectOnFrame(
+      bytesList: cameraimage!.planes.map((plane) {return plane.bytes;}).toList(),// required
+      model: "SSDMobileNet",
+      imageHeight: cameraimage!.height,
+      imageWidth: cameraimage!.width,
+      imageMean: 127.5,   // defaults to 127.5
+      imageStd: 127.5,    // defaults to 127.5
+      rotation: 90,       // defaults to 90, Android only
+      numResultsPerClass: 1,      // defaults to 5
+      threshold: 0.4,     // defaults to 0.1
+      // defaults to true
     );
     isWorking=false;
-  setState(() {
-   cameraimage;
-  });
+    setState(() {
+      cameraimage;
+    });
 
 
   }
-  initcamera(){
+  initcamera() async {
 
     controller=controller=CameraController(cameras![0], ResolutionPreset.medium);
-controller!.initialize().then((value) {
-  if(mounted){
-return null;
-  }
-  else{
-    setState(() {
-      controller!.startImageStream((imagefromstream) => {
-        print("jaan"),
-        if(!isWorking){
-    isWorking=true,
-      cameraimage=imagefromstream,
-        runModalIoFrame(),
-        }
+    await controller!.initialize().then((value)
+    {
+      print("step7");
+      setState(() {
+        controller!.startImageStream((imagefromstream) => {
+          print("step2"),
+          if(!isWorking){
+            print("step3"),
+            isWorking=true,
+            cameraimage=imagefromstream,
+            print("step4"),
+            runModalIoFrame(),
+            print("step6"),
+          }
+        });
       });
+
+
     });
   }
 
-
-});
-  }
-
-@override
+  @override
   void initState() {
     // TODO: implement initState
-
-  super.initState();
+loadmodal();
+    super.initState();
   }
 
-@override
+  @override
   void didChangeDependencies() {
     // TODO: implement didChangeDependencies
     super.didChangeDependencies();
@@ -154,9 +158,9 @@ return null;
   @override
   void dispose() {
     // TODO: implement dispose
-   controller!.stopImageStream();
-   controller!.dispose();
-   Tflite.close();
+    controller!.stopImageStream();
+    controller!.dispose();
+    Tflite.close();
     super.dispose();
   }
 
@@ -166,28 +170,35 @@ return null;
     final width=MediaQuery.of(context).size.width;
 
     List<Widget> stackChildrenWidget=[];
-stackChildrenWidget.add(
-  Positioned(
-  top: 0,
-    left: 0,
-    width: width,
-    height: height-100,
-    child: Container(
-      width: width,
-      height: height-100,
-      child: _cameraPreviewWidget(),
+    stackChildrenWidget.add(
+      Positioned(
+        top: 0,
+        left: 0,
+        width: width,
+        child: Container(
+          width: width,
+          alignment: Alignment.bottomCenter,
+          height: height*1,
+          child: _cameraPreviewWidget(),
 
-    ),
-  ),
-);
-if(cameraimage!=null){
-  print("gaand");
-  stackChildrenWidget.addAll(renderBoxes(MediaQuery.of(context).size));
-}
+        ),
+      ),
+    );
+    if(cameraimage!=null){
+
+      stackChildrenWidget.addAll(renderBoxes(MediaQuery.of(context).size));
+    }
 
     return Scaffold(
-      body:      Stack(
-        children: stackChildrenWidget
+
+      body:      Container(
+        height: height*0.9,
+        alignment: Alignment.bottomCenter,
+        child: Center(
+          child: Stack(
+              children: stackChildrenWidget
+          ),
+        ),
       ),
 
     );

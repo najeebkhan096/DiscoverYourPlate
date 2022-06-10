@@ -14,7 +14,8 @@ class ImageClassification extends StatefulWidget {
 }
 
 class _ImageClassificationState extends State<ImageClassification> {
-  bool loading=false;
+
+  bool ? loaded=false;
   final picker = ImagePicker();
 
   void _show_my_Dialog() {
@@ -53,19 +54,21 @@ class _ImageClassificationState extends State<ImageClassification> {
               ),
             )));
   }
+
   List output=[];
   File ? filename;
   classifyImage(File image)async{
+    output=[];
     var recognitions =await Tflite.runModelOnImage(
         path: image.path,   // required
         imageMean: 127.5,   // defaults to 117.0
         imageStd: 127.5,  // defaults to 1.0
         numResults: 2,    // defaults to 5
-        threshold: 0.5,   // defaults to 0.1
+        threshold: 0.1,   // defaults to 0.1
         asynch: true// defaults to true
     );
     setState(() {
-      loading=true;
+
       output=recognitions!;
     });
   }
@@ -74,18 +77,20 @@ class _ImageClassificationState extends State<ImageClassification> {
       final image =
       await ImagePicker.platform.getImage(source: ImageSource.camera);
       if(image==null) return null;
-      setState(() {
-        loading=true;
-        filename = File(image.path);
 
+
+      setState(() {
+        filename = File(image.path);
       });
+
+
     } else {
+     
       final image =
       await ImagePicker.platform.getImage(source: ImageSource.gallery);
-      setState(() {
-        loading=true;
-        filename = File(image!.path);
 
+      setState(() {
+        filename = File(image!.path);
       });
 
     }
@@ -96,22 +101,31 @@ class _ImageClassificationState extends State<ImageClassification> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    loadmodal().then((value) {
-      setState(() {
-        loading=false;
-      });
-    });
+
   }
 
   Future loadmodal()async{
 
     String? res = await Tflite.loadModel(
-      model: "images/model_unquant.tflite",
-      labels: "images/labels.txt",
+      model: "LiveDetectionAssets/model_unquant.tflite",
+      labels: "LiveDetectionAssets/labels.txt",
     );
 
   }
 
+@override
+  Future<void> didChangeDependencies() async {
+    // TODO: implement didChangeDependencies
+    super.didChangeDependencies();
+  if(loaded==false){
+    await loadmodal().then((value) {
+      setState(() {
+        loaded=true;
+
+      });
+    });
+  }
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -153,8 +167,10 @@ class _ImageClassificationState extends State<ImageClassification> {
                  ),
                  color: Color.fromRGBO(50, 205, 50, 2),
                  textColor: Colors.white70,
-                 onPressed: () {
-                   _show_my_Dialog();
+                 onPressed: () async{
+
+                        _show_my_Dialog();
+
                                     },
                ),
              ),
@@ -185,7 +201,15 @@ class _ImageClassificationState extends State<ImageClassification> {
                        borderRadius: BorderRadius.circular(20),
                        color: Colors.green,
                      ),
-                     child: Text("${output[0]['label']}".replaceAll(RegExp(r'[0-9]'),''),style: TextStyle(color: Colors.white),)),
+                     child:
+                     Column(
+                       children: [
+                         Text("${output[0]['label']}".replaceAll(RegExp(r'[0-9]'),''),style: TextStyle(color: Colors.white),),
+                         Text("${output[0]['confidence']}",style: TextStyle(color: Colors.white),),
+
+
+                       ],
+                     )),
                  Container(
                    height: 50,
                    padding:  EdgeInsets.only(top: MediaQuery.of(context).size.height*0.02,),

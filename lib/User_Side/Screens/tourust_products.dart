@@ -1,10 +1,16 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:discoveryourplate/Chat/chatscreen.dart';
+import 'package:discoveryourplate/Database/database.dart';
 import 'package:discoveryourplate/Restuarent_Side/modals/product.dart';
+import 'package:discoveryourplate/User_Side/modal/item_data.dart';
+import 'package:discoveryourplate/User_Side/modal/user_modal.dart';
 import 'package:discoveryourplate/User_Side/widgets/bottom_navigation_bar.dart';
 import 'package:discoveryourplate/User_Side/modal/constants.dart';
+import 'package:discoveryourplate/modals/foodcalories.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class Tourist_Products_Screen extends StatefulWidget {
   static const routename = "Tourist_Products_Screen";
@@ -15,7 +21,7 @@ class Tourist_Products_Screen extends StatefulWidget {
 
 class _Tourist_Products_ScreenState extends State<Tourist_Products_Screen> {
   @override
-  List<Product> categores_view_list = [];
+
   void _showErrorDialog(String msg) {
     showDialog(
         context: context,
@@ -32,52 +38,32 @@ class _Tourist_Products_ScreenState extends State<Tourist_Products_Screen> {
           ],
         ));
   }
-  Future<List<Product>> fetch_active() async {
 
-    List<Product> newCategories = [];
-    CollectionReference collection =
-    FirebaseFirestore.instance.collection('Products');
 
-    await collection.get().then((QuerySnapshot snapshot) {
-      snapshot.docs.forEach((element) {
-        Map fetcheddata = element.data() as Map<String, dynamic>;
-title=title.trim();
-print("category is"+title.toString()+" and "+fetcheddata['category'].toString());
-        if (fetcheddata['category'].toString().contains( title.toString())) {
-print("done bro");
-          Product new_product = Product(
-              title: fetcheddata['title'],
-              price: fetcheddata['price'],
-              quantity: 1,
-              id: element.id,
-              imageurl: fetcheddata['url'],
-              status: fetcheddata['status'],
-              category: fetcheddata['category'],
-              product_doc_id: fetcheddata['product_doc_id'],
-              restuarent_id: fetcheddata['restuarent_id'],
-              subtitle: fetcheddata['description'],
-              total: 0,
-              sales: fetcheddata['sales'],
-              Restuarent_name: fetcheddata['Restuarent_name'].toString()
-          );
-          newCategories.add(new_product);
 
-        }
-
-      });
-    });
-
-    return newCategories;
-  }
 
   int _quantity = 0;
   String title='';
+  List<Product> desiredlist=[];
   Widget build(BuildContext context) {
    title= ModalRoute.of(context)!.settings.arguments  as String;
-print("so title is "+title.toString());
-if(title=="Burgers"){
-  print("jaan");
-}
+   title=title.trim();
+   if(title=="Pizza"){
+     desiredlist=pizza;
+   }
+   else if(title=="Burgers"){
+     desiredlist=burger;
+   }
+
+   else if(title=="Snacks"){
+     desiredlist=snacks;
+   }
+   else if(title=="Drinks"){
+     desiredlist=drinks;
+   }
+   else if(title=="Shakes"){
+     desiredlist=shakes;
+   }
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
@@ -96,105 +82,123 @@ if(title=="Burgers"){
           ),
         ),
       ),
-      body: FutureBuilder(
-        future: fetch_active(),
-        builder: (BuildContext context,AsyncSnapshot<List<Product>> snapshot){
-          return
-
-            snapshot.connectionState==ConnectionState.waiting?
-                SpinKitCircle(color: Colors.black,):
-                snapshot.hasData?
-            ListView.builder(
+      body:
+                  ListView.builder(
               itemBuilder: (ctx, index) {
                 return
-
-
-                  Padding(
-                  padding: const EdgeInsets.only(
-                      left: 10, right: 10, top: 10, bottom: 8),
-                  child: Container(
-                    height: MediaQuery.of(context).size.height * 0.15,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Container(
-                          padding:  EdgeInsets.only(
-                            left: 10,),
-                          child: Text("Restuarent name : "+
-                              snapshot.data![index].Restuarent_name.toString(),
-                            style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                fontFamily: 'Proxima Nova Condensed Bold'),
-                          ),
-                        ),
-                        ListTile(
-                          leading: ClipRRect(
-                            borderRadius: BorderRadius.circular(6),
-                            child: Container(
-                              height: MediaQuery.of(context).size.height * 07,
-                              width: MediaQuery.of(context).size.width * 0.26,
-                              child:
-                              snapshot.data![index].imageurl!.isEmpty
-                                  ? Center(child: Text(""))
-                                  : FittedBox(
-                                  fit: BoxFit.fill,
-                                  child: Image.network(
-                                      snapshot.data![index]
-                                          .imageurl
-                                          .toString())),
+                  Card(
+                    elevation: 10,
+                    margin: EdgeInsets.only(left: 10,right: 10,bottom: 10),
+                    child: Container(
+                      padding: EdgeInsets.all(10),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Container(
+                            padding:  EdgeInsets.only(
+                              left: 10,),
+                            child: Text("Restuarent name : "+
+                                desiredlist[index].Restuarent_name.toString(),
+                              style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontFamily: 'Proxima Nova Condensed Bold'),
                             ),
                           ),
-                          title: Text(
-                            snapshot.data![index].title.toString(),
-                            style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                fontFamily: 'Proxima Nova Condensed Bold'),
-                          ),
-                          subtitle: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                snapshot.data![index]
-                                    .subtitle
-                                    .toString(),
-                                style: TextStyle(
-                                  fontFamily: 'Proxima Nova Alt Regular.otf',
-                                  color: Color(0xff131010),
-                                ),
+                          SizedBox(height: 10,),
+
+                          ListTile(
+                            leading: ClipRRect(
+                              borderRadius: BorderRadius.circular(6),
+                              child: Container(
+                                height: MediaQuery.of(context).size.height * 1,
+                                width: MediaQuery.of(context).size.width * 0.26,
+                                child:
+                                desiredlist[index].imageurl!.isEmpty
+                                    ? Center(child: Text(""))
+                                    : FittedBox(
+                                    fit: BoxFit.fill,
+                                    child: Image.network(
+                                        desiredlist[index]
+                                            .imageurl
+                                            .toString())),
                               ),
-                              SizedBox(
-                                height: MediaQuery.of(context).size.height *
-                                    0.015,
-                              ),
-                              Text(
-                                  'PKR${   snapshot.data![index].price.toString()}',
+                            ),
+                            title: Text(
+                              desiredlist[index].title.toString(),
+                              style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontFamily: 'Proxima Nova Condensed Bold'),
+                            ),
+                            subtitle: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  desiredlist[index]
+                                      .subtitle
+                                      .toString(),
                                   style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      fontFamily: 'SFUIText-Semibold')),
-                            ],
-                          ),
-                          trailing: InkWell(
-                            onTap: () {
+                                    fontFamily: 'Proxima Nova Alt Regular.otf',
+                                    color: Color(0xff131010),
+                                  ),
+                                ),
+                                SizedBox(
+                                  height: MediaQuery.of(context).size.height *
+                                      0.005,
+                                ),
+                                Text(
+                                    'PKR${desiredlist[index].price.toString()}',
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontFamily: 'SFUIText-Semibold')),
 
 
-                              if(cart_list.any((element) => element.restuarent_id==snapshot.data![index].restuarent_id)){
-                                Fluttertoast.showToast(
-                                    msg: "Already Added to Cart",
-                                    toastLength: Toast.LENGTH_SHORT,
-                                    gravity: ToastGravity.CENTER,
-                                    timeInSecForIosWeb: 1,
-                                    backgroundColor: Colors.red,
-                                    textColor: Colors.white,
-                                    fontSize: 16.0);
-                              }
-                              else{
-                                if(cart_list.length>0){
-                                  print("length is 0");
-                                  if(cart_list[0].restuarent_id!=snapshot.data![index].restuarent_id){
-                                    _showErrorDialog("You can not order from two different Resturents  at a time right now ");
+                                SizedBox(
+                                  height: MediaQuery.of(context).size.height *
+                                      0.005,
+                                ),
+                                Text(
+                                    desiredlist[index].size.toString()
+                                    ,
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontFamily: 'SFUIText-Semibold')),
+
+                              ],
+                            ),
+                            trailing: InkWell(
+                              onTap: () {
+
+
+                                if(cart_list.any((element) => element.product_doc_id==desiredlist[index].product_doc_id)
+                                ){
+                                  Fluttertoast.showToast(
+                                      msg: "Already Added to Cart",
+                                      toastLength: Toast.LENGTH_SHORT,
+                                      gravity: ToastGravity.CENTER,
+                                      timeInSecForIosWeb: 1,
+                                      backgroundColor: Colors.red,
+                                      textColor: Colors.white,
+                                      fontSize: 16.0);
+                                }
+                                else{
+                                  if(cart_list.length>0){
+                                    if(cart_list[0].restuarent_id!=desiredlist[index].restuarent_id){
+                                      _showErrorDialog("You can not order from two different Resturents  at a time right now ");
+                                    }
+                                    else{
+                                      cart_list.add(desiredlist[index]);
+                                      Fluttertoast.showToast(
+                                          msg: "Added to Cart",
+                                          toastLength: Toast.LENGTH_SHORT,
+                                          gravity: ToastGravity.CENTER,
+                                          timeInSecForIosWeb: 1,
+                                          backgroundColor: Colors.red,
+                                          textColor: Colors.white,
+                                          fontSize: 16.0);
+                                    }
                                   }
                                   else{
-                                    cart_list.add(snapshot.data![index]);
+                                    cart_list.add(desiredlist[index]);
                                     Fluttertoast.showToast(
                                         msg: "Added to Cart",
                                         toastLength: Toast.LENGTH_SHORT,
@@ -203,52 +207,101 @@ if(title=="Burgers"){
                                         backgroundColor: Colors.red,
                                         textColor: Colors.white,
                                         fontSize: 16.0);
+
                                   }
-                                }
-                                else{
-                                  print("length is not 0");
-                                  cart_list.add(snapshot.data![index]);
-                                  Fluttertoast.showToast(
-                                      msg: "Added to Cart",
-                                      toastLength: Toast.LENGTH_SHORT,
-                                      gravity: ToastGravity.CENTER,
-                                      timeInSecForIosWeb: 1,
-                                      backgroundColor: Colors.red,
-                                      textColor: Colors.white,
-                                      fontSize: 16.0);
 
                                 }
-print("bol");
-                              }
 
 
-                            },
-                            child: Container(
-                                decoration: BoxDecoration(
-                                    color: Colors.green,
-                                    borderRadius: BorderRadius.circular(5)),
-                                height:
-                                MediaQuery.of(context).size.height * 0.05,
-                                width:
-                                MediaQuery.of(context).size.width * 0.2,
-                                margin: EdgeInsets.only(bottom: 24),
-                                child: Center(
-                                  child: Text(
-                                    "Add to Cart",
-                                    style: TextStyle(color: Colors.white),
-                                  ),
-                                )),
+                              },
+                              child: Container(
+                                  decoration: BoxDecoration(
+                                      color: Colors.green,
+                                      borderRadius: BorderRadius.circular(5)),
+                                  height:
+                                  MediaQuery.of(context).size.height * 0.05,
+                                  width:
+                                  MediaQuery.of(context).size.width * 0.2,
+                                  margin: EdgeInsets.only(bottom: 24),
+                                  child: Center(
+                                    child: Text(
+                                      "Add to Cart",
+                                      style: TextStyle(color: Colors.white,fontSize: 12.5),
+                                    ),
+                                  )),
+                            ),
                           ),
-                        ),
-                      ],
-                    ),
+                          SizedBox(height: 15,),
+                          Container(
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                InkWell(
+                                  onTap: (){
+                                    MyUser chatter=MyUser(
+                                        desiredlist[index].restuarent_id,
+                                        '',
+                                        desiredlist[index].Restuarent_name
+                                    );
+                                    Database socialdatabase=Database();
+                                    socialdatabase
+                                        .getUserInfogetChats(
+                                        desiredlist[index].restuarent_id
+                                    )
+                                        .then((value) {
+                                      print(
+                                          "so final chatroom id is " +
+                                              value.toString());
+                                      Navigator.of(context).pushNamed(
+                                        Chat_Screen.routename,
+                                        arguments: [
+                                          value.toString(),
+                                          chatter
+                                        ],
+                                      );
 
-                  ),
-                );
+                                      //
+                                    });
+                                  },
+                                  child:  Container(
+
+                                      margin: EdgeInsets.only(right: 30),
+                                      child:Icon(Icons.message,color: Colors.teal,)),
+                                ),
+
+                                InkWell(
+                                  onTap: ()async{
+
+                                    String url = "whatsapp://send?phone=${desiredlist[index].restuarentphone}&text=Hello World!";
+
+                                    await launch(url);
+                                  },
+                                  child: Container(
+
+                                      margin: EdgeInsets.only(left: 30,right: 30),
+                                      child:Icon(Icons.whatsapp,color: Colors.teal,)),
+                                ),
+                                InkWell(
+                                  onTap: ()async{
+                                    await  launch('tel://${desiredlist[index].restuarentphone}');
+
+                                  },
+                                  child: Container(
+
+                                      margin: EdgeInsets.only(left: 30,right: 30),
+                                      child:Icon(Icons.phone,color: Colors.teal,)),
+                                ),
+                              ],
+                            ),
+                          ),
+                          SizedBox(height: 10,),
+                        ],
+                      ),
+
+                    ),
+                  );
               },
-              itemCount:snapshot.data!.length):Text("No ");
-        },
-      ),
+              itemCount:desiredlist.length),
       bottomNavigationBar: User_Bottom_Navigation_Bar(),
     );
   }

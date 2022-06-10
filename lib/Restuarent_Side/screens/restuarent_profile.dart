@@ -74,7 +74,7 @@ class _Restuarent_Profile_screenState extends State<Restuarent_Profile_screen> {
   @override
   void initState() {
     // TODO: implement initState
-    restuarent_current_index=3;
+    restuarent_current_index=4;
     super.initState();
   }
 
@@ -126,23 +126,7 @@ class _Restuarent_Profile_screenState extends State<Restuarent_Profile_screen> {
               SizedBox(
                 height: MediaQuery.of(context).size.height * 0.04,
               ),
-              ListTile(
-                onTap: (){
 
-                },
-                leading: Text(
-                  "Edit profile",
-                  style: TextStyle(
-                      fontFamily: 'SFUIText-Regular',
-                      fontSize: 18,
-                      fontWeight: FontWeight.w500,
-                      color: Color(0xff2E3034)),
-                ),
-                trailing: Icon(
-                  Icons.keyboard_arrow_right,
-                  color: Color(0xff2E3034),
-                ),
-              ),
 
               ListTile(
 

@@ -1,4 +1,6 @@
 
+import 'package:discoveryourplate/Chat/RestuarentConversation.dart';
+import 'package:discoveryourplate/Chat/conversation.dart';
 import 'package:discoveryourplate/Restuarent_Side/screens/Admin_Orders_Screen.dart';
 import 'package:discoveryourplate/Restuarent_Side/screens/Restuarent_Dashboard.dart';
 import 'package:discoveryourplate/Restuarent_Side/screens/notification_screen.dart';
@@ -62,7 +64,19 @@ class _Restuarent_Bottom_Navigation_BarState extends State<Restuarent_Bottom_Nav
             });
 //
           }
+
           if(restuarent_current_index==3){
+
+            Navigator.of(context).pushReplacementNamed(RestuarentConversation.id).then((value) {
+              setState(() {
+
+              });
+            });
+
+          }
+
+
+          if(restuarent_current_index==4){
 
             Navigator.of(context).pushReplacementNamed(Restuarent_Profile_screen.routname).then((value) {
               setState(() {
@@ -93,6 +107,14 @@ class _Restuarent_Bottom_Navigation_BarState extends State<Restuarent_Bottom_Nav
           NavigationDestination( icon: Icon(
                   Icons.notification_important,
                   color: Colors.green,),label: "Notification",),
+
+
+
+          NavigationDestination( icon:  Icon(
+            Icons.message,
+            color: Colors.green,
+          ),label: "Chat"),
+
           NavigationDestination( icon:  Icon(
 
                       Icons.account_circle,

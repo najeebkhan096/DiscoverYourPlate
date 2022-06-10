@@ -18,12 +18,13 @@ class FoodCalories {
           "https://trackapi.nutritionix.com/v2/search/instant?query=${title}"),
       headers: {
         'Content-Type': 'application/json; charset=utf-8',
-        'x-app-id': '72bc8a45',
-        'x-app-key': '06e3d1294b8db1136161803a14eb0573',
+        'x-app-id': 'd2c7a7f7',
+        'x-app-key': 'a16f07ac205a5d16db0310a28efe4459',
       },
     );
 
     final data = jsonDecode(result.body);
+    print("ttle is "+title.toString());
     List<dynamic> brandedData = data['branded'];
 
 

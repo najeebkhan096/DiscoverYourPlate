@@ -12,6 +12,23 @@ import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 import 'package:flutter/material.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 class Database{
+
+  Future<void> updatedriverLocation(double lat,double long,docid) async {
+
+
+    Map<String, dynamic> data = {
+      'worker_latitude':lat ,
+      'worker_longitude':long
+
+    };
+
+
+
+    CollectionReference collection =
+    FirebaseFirestore.instance.collection('Orders');
+    final result=await collection.doc(docid).update(data);
+
+  }
   Future Add_Order(Order myorder) async {
 
 
@@ -74,13 +91,50 @@ class Database{
               uid: user_id,
               BMI: fetcheddata['BMI'],
             height: fetcheddata['height'],
-            weight: fetcheddata['weight']
+            weight: fetcheddata['weight'],
+            age: fetcheddata['age']
           );
 
         }
       });
     }).then((value) {});
 
+    return user;
+  }
+
+
+  Future<List<User_Data>?> fetchusers() async {
+    List<User_Data>? user=[];
+
+    CollectionReference collection =
+    FirebaseFirestore.instance.collection('Users');
+
+    await collection.get().then((QuerySnapshot snapshot) {
+      snapshot.docs.forEach((element) {
+        Map<String, dynamic>? fetcheddata =
+        element.data() as Map<String, dynamic>;
+
+        if (fetcheddata['admin'] == false) {
+
+          user!.add(
+              User_Data(
+              email: fetcheddata['email'].toString(),
+              name: fetcheddata['username'].toString(),
+              doc_id: element.id,
+              admin: fetcheddata['admin'],
+              imageurl: fetcheddata['imageurl'].toString(),
+              phone: fetcheddata['phone_no'].toString(),
+              uid: fetcheddata['userid'],
+              BMI: fetcheddata['BMI'],
+              height: fetcheddata['height'],
+              weight: fetcheddata['weight'],
+              age: fetcheddata['age']
+          ));
+
+        }
+      });
+    }).then((value) {});
+print("total users "+user.toString());
     return user;
   }
 
@@ -348,9 +402,10 @@ print("restuarent length is "+restuarents.toString());
 
 
 
-  Future<void> updateBMI({double ? bmi,String ? userdoc,double ? height,double ? weight}) async {
+  Future<void> updateBMI({double ? bmr,double ? bmi,String ? userdoc,double ? height,double ? weight}) async {
 
     Map<String, dynamic> data = {
+      'BMI': bmr,
       'BMI': bmi,
       'height':height,
       'weight':weight
@@ -532,6 +587,19 @@ print("restuarent length is "+restuarents.toString());
     });
 
     return chat_id;
+  }
+  Future<void> updateSteps({String ? userdoc,String ? step}) async {
+
+    Map<String, dynamic> data = {
+      'todayStep':step,
+
+    };
+
+
+    CollectionReference collection =
+    FirebaseFirestore.instance.collection('Users');
+    collection.doc(userdoc).update(data);
+
   }
 
   Future getUserInfogetChats(String user2) async {

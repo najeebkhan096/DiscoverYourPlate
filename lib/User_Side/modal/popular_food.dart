@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:discoveryourplate/Restuarent_Side/modals/product.dart';
+import 'package:discoveryourplate/User_Side/Screens/DetailScreen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 
@@ -28,6 +29,7 @@ class Recomended_Product_Screen extends StatelessWidget {
               restuarent_id: fetcheddata['restuarent_id'],
               subtitle: fetcheddata['description'],
               total: 0,
+              size: fetcheddata['size'],
               sales: fetcheddata['sales'],
               Restuarent_name: fetcheddata['Restuarent_name'].toString()
           );
@@ -56,38 +58,45 @@ class Recomended_Product_Screen extends StatelessWidget {
                     snapshot.data!.length>0?
 
             ListView.builder(itemBuilder: (ctx,index){
-            return Container(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Container(
+            return InkWell(
+              onTap: (){
+
+                Navigator.of(context).pushNamed(DetailScreen.routename,arguments: snapshot.data![index]);
+
+                },
+              child: Container(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Container(
+                        margin: EdgeInsets.only(left: 15, top: 10),
+                        width: MediaQuery.of(context).size.width * 0.38,
+                        height: MediaQuery.of(context).size.height * 0.19,
+                        padding: EdgeInsets.only(bottom: 21),
+                        decoration: BoxDecoration(
+                            image: DecorationImage(
+                                image:
+                                NetworkImage(snapshot.data![index].imageurl.toString()),
+                               fit: BoxFit.fill),
+                            borderRadius: BorderRadius.circular(10))),
+                    Container(
                       margin: EdgeInsets.only(left: 15, top: 10),
                       width: MediaQuery.of(context).size.width * 0.38,
-                      height: MediaQuery.of(context).size.height * 0.19,
-                      padding: EdgeInsets.only(bottom: 21),
-                      decoration: BoxDecoration(
-                          image: DecorationImage(
-                              image:
-                              NetworkImage(snapshot.data![index].imageurl.toString()),
-                             fit: BoxFit.fill),
-                          borderRadius: BorderRadius.circular(10))),
-                  Container(
-                    margin: EdgeInsets.only(left: 15, top: 10),
-                    width: MediaQuery.of(context).size.width * 0.38,
-                    height: MediaQuery.of(context).size.height * 0.02,
-                    child: Padding(
-                      padding: const EdgeInsets.only(left: 3),
-                      child:Text(
-              snapshot.data![index].title.toString(),
-                        style: TextStyle(
-                          fontFamily: 'Proxima Nova Condensed Bold',
-                          color: Color(0xff131010),
-                          fontWeight: FontWeight.bold,
-                        ),
-                      )
+                      height: MediaQuery.of(context).size.height * 0.02,
+                      child: Padding(
+                        padding: const EdgeInsets.only(left: 3),
+                        child:Text(
+                snapshot.data![index].title.toString(),
+                          style: TextStyle(
+                            fontFamily: 'Proxima Nova Condensed Bold',
+                            color: Color(0xff131010),
+                            fontWeight: FontWeight.bold,
+                          ),
+                        )
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             );
           },

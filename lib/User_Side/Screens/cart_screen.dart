@@ -28,7 +28,7 @@ class Cart_Screen extends StatefulWidget {
 
 class _Cart_ScreenState extends State<Cart_Screen> {
   bool isloading = false;
-
+  Position ? data;
   Database database = Database();
   GoogleLocation _location = GoogleLocation();
   TextEditingController notes_controller = TextEditingController();
@@ -637,51 +637,51 @@ calculateCalories();
                                         });
                                         try {
     if (current_location!.isEmpty) {
-    _showErrorDialog("Please Select Location");
+      print("step10");
+      MyGeolocation _location=MyGeolocation();
+     data= await _location
+          .determinePosition();
+      current_location = await _location
+          .GetAddressFromLatLong(data!);
+
+      print("loc is "+current_location.toString());
+      setState(() {
+        isloading = false;
+      });
     } else {
-    MyGeolocation _location=MyGeolocation();
-    Position data = await _location
-        .determinePosition();
-    current_location = await _location
-        .GetAddressFromLatLong(data);
+print("done");
+MyGeolocation _location=MyGeolocation();
+data= await _location
+    .determinePosition();
+current_location = await _location
+    .GetAddressFromLatLong(data!);
 
+setState(() {
+  isloading = false;
+});
+      Order new_order = Order(
+          products: cart_list,
+          total_price: totalamount,
+          date: DateTime.now().toString(),
+          location: current_location,
+          customer_latitude: data!.latitude,
+          customer_longitude:
+          data!.longitude,
+          customer_name: username,
+          notes: notes_controller.text,
+          userid: user_id,
+          order_status: 'ongoing',
+          restuarent_id: cart_list[0].product_doc_id
 
-                                          if (current_location!.isEmpty) {
-                                            _showErrorDialog(
-                                                "Pick Your Current Location");
-                                            setState(() {
-                                              isloading = false;
-                                            });
-                                          } else {
-    setState(() {
-    isloading = true;
-    });
+      );
+      print("step2");
 
-    Order new_order = Order(
-    products: cart_list,
-    total_price: totalamount,
-    date: DateTime.now().toString(),
-    location: current_location,
-    customer_latitude: data.latitude,
-    customer_longitude:
-    data.longitude,
-    customer_name: username,
-    notes: notes_controller.text,
-    userid: user_id,
-    order_status: 'ongoing',
-    restuarent_id: cart_list[0].product_doc_id
-
-    );
-    print("step2");
-
-    makePayment(new_order).then((value) {
-    setState(() {
-    isloading = false;
-    });
-    });
-
-
-    }}
+      await makePayment(new_order).then((value) {
+        setState(() {
+          isloading = false;
+        });
+      });
+    }
 
                                         } catch (error) {
                                           setState(() {

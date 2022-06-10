@@ -1,7 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:discoveryourplate/Database/database.dart';
 import 'package:discoveryourplate/Restuarent_Side/Chart/barchart_module.dart';
 import 'package:discoveryourplate/Restuarent_Side/Chart/sfchart.dart';
 import 'package:discoveryourplate/Restuarent_Side/modals/product.dart';
+import 'package:discoveryourplate/User_Side/modal/user_modal.dart';
 import 'package:discoveryourplate/modals/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
@@ -222,6 +224,19 @@ today_date=now.day+1;
 
     today_date=now.day;
   }
+bool fetched=false;
+  Database _database=Database();
+
+  @override
+  Future<void> didChangeDependencies() async {
+    // TODO: implement didChangeDependencies
+    super.didChangeDependencies();
+    if(fetched==false){
+      currentuser=await  _database.fetchprofiledata();
+fetched=true;
+    }
+  }
+
 
   Widget build(BuildContext context) {
     print("restuarent id "+restuarent_id.toString());

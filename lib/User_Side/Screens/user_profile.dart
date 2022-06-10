@@ -1,10 +1,12 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:discoveryourplate/LiveDetection.dart';
 import 'package:discoveryourplate/Restuarent_Side/modals/product.dart';
 import 'package:discoveryourplate/Restuarent_Side/screens/stock_screen.dart';
 import 'package:discoveryourplate/Restuarent_Side/widgets/Restuarent_bottom_navigation.dart';
 import 'package:discoveryourplate/BMI/BMI.dart';
 import 'package:discoveryourplate/User_Side/Screens/Edit_Profile_Screen.dart';
 import 'package:discoveryourplate/User_Side/Screens/Home_screen.dart';
+import 'package:discoveryourplate/User_Side/Screens/PedoMeter.dart';
 import 'package:discoveryourplate/User_Side/Screens/feedback.dart';
 import 'package:discoveryourplate/User_Side/modal/constants.dart';
 import 'package:discoveryourplate/User_Side/modal/restuarent_modal.dart';
@@ -194,10 +196,53 @@ class _User_Profile_ScreenState extends State<User_Profile_Screen> {
             onTap: () {
               // selected_restuarent==null?
               // _showErrorDialog("Resturent is not selected"):
-              Navigator.of(context).pushNamed(CalculateBMI.routename);
+              Navigator.of(context).pushNamed(Calculatebmr.routename);
             },
             leading: Text(
               "BMI",
+              style: TextStyle(
+                  fontFamily: 'SFUIText-Regular',
+                  fontSize: 18,
+                  fontWeight: FontWeight.w500,
+                  color: Color(0xff2E3034)),
+            ),
+            trailing: Icon(
+              Icons.keyboard_arrow_right,
+              color: Color(0xff2E3034),
+            ),
+          ),
+          ListTile(
+            onTap: () {
+              // selected_restuarent==null?
+              // _showErrorDialog("Resturent is not selected"):
+              Navigator.of(context).pushNamed(StepsPedoMeter.routename);
+            },
+            leading: Text(
+              "Step Count",
+              style: TextStyle(
+                  fontFamily: 'SFUIText-Regular',
+                  fontSize: 18,
+                  fontWeight: FontWeight.w500,
+                  color: Color(0xff2E3034)),
+            ),
+            trailing: Icon(
+              Icons.keyboard_arrow_right,
+              color: Color(0xff2E3034),
+            ),
+          ),
+
+
+          ListTile(
+            onTap: () {
+              // selected_restuarent==null?
+              // _showErrorDialog("Resturent is not selected"):
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => LiveDetection()),
+              );
+            },
+            leading: Text(
+              "Check Ingredients",
               style: TextStyle(
                   fontFamily: 'SFUIText-Regular',
                   fontSize: 18,

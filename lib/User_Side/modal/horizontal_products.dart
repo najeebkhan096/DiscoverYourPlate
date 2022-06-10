@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:discoveryourplate/Restuarent_Side/modals/product.dart';
 import 'package:discoveryourplate/Restuarent_Side/modals/restuarent_data.dart';
 import 'package:discoveryourplate/User_Side/Screens/category_screen.dart';
+import 'package:discoveryourplate/User_Side/modal/item_data.dart';
 import 'package:discoveryourplate/modals/foodcalories.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
@@ -14,11 +15,6 @@ class food_side_Horizontal_products extends StatelessWidget {
   @override
   static const IconData scissors = IconData(0xf7c9);
   List arg = [];
-  List<Product> burger = [];
-  List<Product> snacks = [];
-  List<Product> drinks = [];
-  List<Product> shakes = [];
-  List<Product> pizza = [];
 
 
   Future<String?> calculateCalories(String title,String subtitle)async{
@@ -30,6 +26,7 @@ class food_side_Horizontal_products extends StatelessWidget {
       if(value.length>0) {
         firstitem   = food_list[0];
         cal=firstitem!.nf_calories;
+        print("my cal isss "+cal.toString());
       }
       else{
         await foodData.getFoodDetails(title: subtitle).then((value) async{
@@ -68,13 +65,25 @@ String calculateCal='';
 
           if (fetcheddata['status'] == true) {
 calculateCal='';
-          await calculateCalories(fetcheddata['title'],fetcheddata['description']).then((value) {
-String ? calories=value;
-print("Calories are "+value.toString());
+          await calculateCalories(fetcheddata['title'],fetcheddata['category']).then((value) {
+
+print("Calories are "+calculateCal.toString());
+if(fetcheddata['size']=="Small"){
+  calculateCal=(int.parse(calculateCal.toString())/2).toString();
+}
+
+else if(fetcheddata['size']=="Medium"){
+  calculateCal=(int.parse(calculateCal.toString())/1.5).toString();
+}
+
+else if(fetcheddata['size']=="Extra Large"){
+  calculateCal=(int.parse(calculateCal.toString())*1.5).toString();
+}
             Product new_product = Product(
                 title: fetcheddata['title'],
                 price: fetcheddata['price'],
                 quantity: 1,
+                restuarentphone: fetcheddata['restuarent_phone'],
                 id: element.id,
                 imageurl: fetcheddata['url'],
                 status: fetcheddata['status'],
@@ -84,6 +93,7 @@ print("Calories are "+value.toString());
                 subtitle: fetcheddata['description'],
                 total: 0,
                 sales: fetcheddata['sales'],
+                size: fetcheddata['size'],
                 Restuarent_name: fetcheddata['Restuarent_name'].toString(),
                 calories: calculateCal
             );
@@ -109,37 +119,57 @@ print("Calories are "+value.toString());
 
           if (fetcheddata['status'] == true &&
               fetcheddata['restuarent_id'] == rest_data!.id.toString()) {
-            String ? calories=await calculateCalories(fetcheddata['title'],fetcheddata['description']);
 
-            Product new_product = Product(
-                title: fetcheddata['title'],
-                price: fetcheddata['price'],
-                quantity: 1,
-                id: element.id,
-                imageurl: fetcheddata['url'],
-                status: fetcheddata['status'],
-                category: fetcheddata['category'],
-                product_doc_id: fetcheddata['product_doc_id'],
-                restuarent_id: fetcheddata['restuarent_id'],
-                subtitle: fetcheddata['description'],
-                total: 0,
-                sales: fetcheddata['sales'],
-                Restuarent_name: fetcheddata['Restuarent_name'].toString(),
-              calories: calculateCal
-            );
-            newCategories.add(new_product);
 
-            if (fetcheddata['category'] == "Burgers") {
-              burger.add(new_product);
-            } else if (fetcheddata['category'] == "Pizza") {
-              pizza.add(new_product);
-            } else if (fetcheddata['category'] == "Snacks") {
-              snacks.add(new_product);
-            } else if (fetcheddata['category'] == "Drinks") {
-              drinks.add(new_product);
-            } else if (fetcheddata['category'] == "Shakes") {
-              shakes.add(new_product);
-            }
+
+
+            await calculateCalories(fetcheddata['title'],fetcheddata['category']).then((value) {
+
+
+              print("Calories are "+calculateCal.toString());
+              if(fetcheddata['size']=="Small"){
+                calculateCal=(int.parse(calculateCal.toString())/2).toString();
+              }
+
+              else if(fetcheddata['size']=="Medium"){
+                calculateCal=(int.parse(calculateCal.toString())/1.5).toString();
+              }
+
+              else if(fetcheddata['size']=="Extra Large"){
+                calculateCal=(int.parse(calculateCal.toString())*1.5).toString();
+              }
+              Product new_product = Product(
+                  title: fetcheddata['title'],
+                  price: fetcheddata['price'],
+                  quantity: 1,
+                  id: element.id,
+                  imageurl: fetcheddata['url'],
+                  status: fetcheddata['status'],
+                  category: fetcheddata['category'],
+                  product_doc_id: fetcheddata['product_doc_id'],
+                  restuarent_id: fetcheddata['restuarent_id'],
+                  subtitle: fetcheddata['description'],
+                  total: 0,
+                  size: fetcheddata['size'],
+                  sales: fetcheddata['sales'],
+                  Restuarent_name: fetcheddata['Restuarent_name'].toString(),
+                  calories: calculateCal
+              );
+              newCategories.add(new_product);
+
+              if (fetcheddata['category'] == "Burgers") {
+                burger.add(new_product);
+              } else if (fetcheddata['category'] == "Pizza") {
+                pizza.add(new_product);
+              } else if (fetcheddata['category'] == "Snacks") {
+                snacks.add(new_product);
+              } else if (fetcheddata['category'] == "Drinks") {
+                drinks.add(new_product);
+              } else if (fetcheddata['category'] == "Shakes") {
+                shakes.add(new_product);
+              }
+            });
+
           }
         }
       });

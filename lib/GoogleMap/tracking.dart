@@ -1,8 +1,12 @@
+import 'dart:async';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:discoveryourplate/Database/database.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart' as loc;
+import 'package:location/location.dart';
 
 
 class Tracking_Screen extends StatefulWidget {
@@ -88,13 +92,33 @@ class _Tracking_ScreenState extends State<Tracking_Screen> {
     return kpolyline;
   }
 
+  StreamSubscription<LocationData> ? locationSubscription;
+Database _database=Database();
 
+@override
+  void dispose() {
+    // TODO: implement dispose
+  location.onLocationChanged.listen((event) {
+  }).cancel();
+  locationSubscription!.cancel();
+
+  super.dispose();
+  }
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
+    locationSubscription = location.onLocationChanged.listen((LocationData cLoc) async {
+      print("changes made are  "+cLoc.latitude.toString());
+      await _database.updatedriverLocation(cLoc.latitude!, cLoc.longitude!, widget.user_id);
+
+    });
   }
-  Stream<QuerySnapshot<Object?>> fetch_distance_data() {
+
+// set custom marker pins
+
+
+Stream<QuerySnapshot<Object?>> fetch_distance_data() {
 
     return  FirebaseFirestore.instance.collection('Orders').snapshots();
   }

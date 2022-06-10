@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart' as http;
+
 class Product{
   final String ? id;
   final String ? title;
@@ -16,8 +17,10 @@ class Product{
   final int ? sales;
   final String ? Restuarent_name;
   final String ? calories;
+  final String ? size;
+  final String ? restuarentphone;
 
-  Product({@required this.id,@required this.price,@required this.title,@required this.quantity,this.subtitle,this.category,this.product_doc_id,this.status,this.restuarent_id,this.imageurl,this.total,this.sales,this.Restuarent_name,this.calories});
+  Product({@required this.id,@required this.price,@required this.title,@required this.quantity,this.subtitle,this.category,this.product_doc_id,this.status,this.restuarent_id,this.imageurl,this.total,this.sales,this.Restuarent_name,this.calories,this.size,this.restuarentphone});
 
 }
 String ? restuarent_id;

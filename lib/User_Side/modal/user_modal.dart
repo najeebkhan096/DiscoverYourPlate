@@ -26,8 +26,10 @@ class User_Data{
   final double ? BMI;
   final double ? height;
   final double ? weight;
+  final double ? age;
+  String ? todaysteps;
 
-  User_Data({this.name,this.email,this.uid,this.admin,this.phone,this.location,this.doc_id,this.imageurl,this.BMI,this.height,this.weight});
+  User_Data({this.name,this.email,this.uid,this.admin,this.phone,this.location,this.doc_id,this.imageurl,this.BMI,this.height,this.weight,this.age,this.todaysteps});
 
 }
 

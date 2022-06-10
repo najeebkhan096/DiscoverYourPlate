@@ -254,7 +254,6 @@ Database _database=Database();
     super.didChangeDependencies();
   if(fetched==false){
      currentuser=await  _database.fetchprofiledata();
-    print("doc is "+currentuser!.height.toString());
 
   }
   }

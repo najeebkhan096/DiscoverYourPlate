@@ -47,7 +47,7 @@ class _CameraViewState extends State<CameraView> with WidgetsBindingObserver {
   }
 
   void initStateAsync() async {
-    WidgetsBinding.instance!.addObserver(this);
+    WidgetsBinding.instance.addObserver(this);
 
     // Spawn a new isolate
     isolateUtils = IsolateUtils();
@@ -173,8 +173,10 @@ class _CameraViewState extends State<CameraView> with WidgetsBindingObserver {
 
   @override
   void dispose() {
-    WidgetsBinding.instance!.removeObserver(this);
+    WidgetsBinding.instance.removeObserver(this);
     cameraController!.dispose();
     super.dispose();
   }
+
+
 }
